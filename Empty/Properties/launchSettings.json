@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SDRSharp.Diagnostics": {
+      "commandName": "Executable",
+      "executablePath": "..\\..\\bin\\SDRSharp.exe",
+      "workingDirectory": "..\\$(Configuration)\\net7.0-windows\\"
+    }
+  }
+}
