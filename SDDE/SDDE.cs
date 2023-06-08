@@ -31,12 +31,6 @@ namespace SDRSharp.SDDE
             if (_gui == null)
             {
                 _gui = new ControlPanel(_control);
-                if (File.Exists("settings.txt"))
-                {
-                    var settings = File.ReadAllText("settings.txt").Split(',');
-                    _gui.textBox_Longitude.Text = settings[0];
-                    _gui.textBox_Latitude.Text = settings[1];
-                }
             }
         }
 
@@ -48,11 +42,7 @@ namespace SDRSharp.SDDE
 
         public void Close()
         {
-            if (_gui == null)
-            {
-                _gui = new ControlPanel(_control);
-            }
-            File.WriteAllText("settings.txt", $"{_gui.textBox_Longitude.Text},{_gui.textBox_Latitude.Text}");
+            
         }
     }
 }

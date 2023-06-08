@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -69,7 +70,8 @@ namespace SDRSharp.SDDE
 
         private void button_UpdateTLElist_Click(object sender, EventArgs e)
         {
-            string directoryPath = Path.Combine(Application.StartupPath, "TLE"); // CSV 文件保存的目录路径
+            string pluginDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string directoryPath = Path.Combine(pluginDirectory, "TLE"); // CSV 文件保存的目录路径
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath); // 如果目录不存在，创建目录
