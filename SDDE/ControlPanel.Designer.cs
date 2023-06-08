@@ -34,6 +34,7 @@ namespace SDRSharp.SDDE
             textBox_Latitude = new System.Windows.Forms.TextBox();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
+            button_TLE = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // textBox_Longitude
@@ -42,6 +43,7 @@ namespace SDRSharp.SDDE
             textBox_Longitude.Name = "textBox_Longitude";
             textBox_Longitude.Size = new System.Drawing.Size(100, 23);
             textBox_Longitude.TabIndex = 0;
+            textBox_Longitude.Text = "0";
             textBox_Longitude.Leave += textBox_Longitude_Leave;
             // 
             // textBox_Latitude
@@ -50,6 +52,7 @@ namespace SDRSharp.SDDE
             textBox_Latitude.Name = "textBox_Latitude";
             textBox_Latitude.Size = new System.Drawing.Size(100, 23);
             textBox_Latitude.TabIndex = 1;
+            textBox_Latitude.Text = "0";
             textBox_Latitude.Leave += textBox_Latitude_Leave;
             // 
             // label1
@@ -70,10 +73,21 @@ namespace SDRSharp.SDDE
             label2.TabIndex = 3;
             label2.Text = "Latitude:";
             // 
+            // button_TLE
+            // 
+            button_TLE.Location = new System.Drawing.Point(8, 64);
+            button_TLE.Name = "button_TLE";
+            button_TLE.Size = new System.Drawing.Size(75, 23);
+            button_TLE.TabIndex = 4;
+            button_TLE.Text = "TLE";
+            button_TLE.UseVisualStyleBackColor = true;
+            button_TLE.Click += button_TLE_Click;
+            // 
             // ControlPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(button_TLE);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(textBox_Latitude);
@@ -91,5 +105,6 @@ namespace SDRSharp.SDDE
         public System.Windows.Forms.TextBox textBox_Latitude;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button_TLE;
     }
 }

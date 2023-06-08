@@ -43,14 +43,16 @@ namespace SDRSharp.SDDE
         public void Initialize(ISharpControl control)
         {
             _control = control;
-            
+
         }
 
         public void Close()
         {
-            File.WriteAllText("settings.txt", $"" +
-                $"{_gui.textBox_Longitude.Text}," +
-                $"{_gui.textBox_Latitude.Text}");
+            if (_gui == null)
+            {
+                _gui = new ControlPanel(_control);
+            }
+            File.WriteAllText("settings.txt", $"{_gui.textBox_Longitude.Text},{_gui.textBox_Latitude.Text}");
         }
     }
 }
