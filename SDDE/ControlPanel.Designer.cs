@@ -96,6 +96,7 @@ namespace SDRSharp.SDDE
             comboBox_Satelitetype.Name = "comboBox_Satelitetype";
             comboBox_Satelitetype.Size = new System.Drawing.Size(285, 25);
             comboBox_Satelitetype.TabIndex = 5;
+            comboBox_Satelitetype.DropDown += comboBox_Satelitetype_DropDown;
             comboBox_Satelitetype.SelectedIndexChanged += comboBox_Satelitetype_SelectedIndexChanged;
             // 
             // checkedListBox_Satellites

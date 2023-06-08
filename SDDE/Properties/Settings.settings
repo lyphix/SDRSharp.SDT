@@ -14,5 +14,8 @@
     <Setting Name="SelectedSatellites" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="SatelliteList" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Amateur Radio,https://celestrak.org/NORAD/elements/amateur.txt;NOAA,https://celestrak.org/NORAD/elements/noaa.txt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

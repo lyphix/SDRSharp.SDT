@@ -49,7 +49,7 @@ namespace SDRSharp.SDDE
 
         private void ControlPanel_Load(object sender, EventArgs e)
         {
-            LoadSatelliteTypes();
+
             Timer timer = new Timer();
             timer.Interval = 1000; // 设置定时器间隔为1秒
             timer.Tick += Timer_Tick;
@@ -65,17 +65,17 @@ namespace SDRSharp.SDDE
 
             string selectedFileName = comboBox_Satelitetype.SelectedItem.ToString();
             string directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TLE");
-            string filePath = Path.Combine(directoryPath, $"{selectedFileName}.csv");
+            string filePath = Path.Combine(directoryPath, $"{selectedFileName}.txt");
 
             if (File.Exists(filePath))
             {
-                DataTable csvData = ReadCsvFile(filePath);
+                //DataTable csvData = ReadtxtFile(filePath);
 
-                foreach (DataRow row in csvData.Rows)
-                {
-                    string objectName = row["OBJECT_NAME"].ToString();
-                    checkedListBox_Satellites.Items.Add(objectName);
-                }
+                //foreach (DataRow row in csvData.Rows)
+                //{
+                //    string objectName = row["OBJECT_NAME"].ToString();
+                //    checkedListBox_Satellites.Items.Add(objectName);
+                //}
             }
         }
 
@@ -84,7 +84,7 @@ namespace SDRSharp.SDDE
             string directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TLE");
             if (Directory.Exists(directoryPath))
             {
-                string[] csvFiles = Directory.GetFiles(directoryPath, "*.csv");
+                string[] csvFiles = Directory.GetFiles(directoryPath, "*.txt");
                 foreach (string csvFile in csvFiles)
                 {
                     string fileName = Path.GetFileNameWithoutExtension(csvFile);
@@ -92,7 +92,7 @@ namespace SDRSharp.SDDE
                 }
             }
         }
-        private DataTable ReadCsvFile(string filePath)
+        private DataTable ReadtxtFile(string filePath)
         {
             DataTable csvData = new DataTable();
 
@@ -200,5 +200,10 @@ namespace SDRSharp.SDDE
             }
         }
 
+        private void comboBox_Satelitetype_DropDown(object sender, EventArgs e)
+        {
+            comboBox_Satelitetype.Items.Clear();
+            LoadSatelliteTypes();
+        }
     }
 }

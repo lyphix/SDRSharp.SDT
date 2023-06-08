@@ -69,5 +69,18 @@ namespace SDRSharp.SDDE.Properties {
                 this["SelectedSatellites"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Amateur Radio,https://celestrak.org/NORAD/elements/amateur.txt;NOAA,https://celes" +
+            "trak.org/NORAD/elements/noaa.txt")]
+        public string SatelliteList {
+            get {
+                return ((string)(this["SatelliteList"]));
+            }
+            set {
+                this["SatelliteList"] = value;
+            }
+        }
     }
 }

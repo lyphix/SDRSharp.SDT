@@ -27,51 +27,57 @@ namespace SDRSharp.SDDE
         {
             TLE_listdata = new DataTable();
             TLE_listdata.Columns.Add("Satellite");
-            TLE_listdata.Columns.Add("URL(csv)");
+            TLE_listdata.Columns.Add("URL");
             dataGridView1.DataSource = TLE_listdata;
 
             dataGridView1.Columns["Satellite"].Width = 150;
-            dataGridView1.Columns["URL(csv)"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns["URL"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            ReadDataFromCsvFile();
+            ReadDataFromSettings();
         }
 
         private void TLE_list_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveDataToCsvFile();
+            SaveDataToSettings();
         }
 
-        private void ReadDataFromCsvFile()
+        private void ReadDataFromSettings()
         {
-            if (File.Exists("TLE.csv"))
+            string satelliteListString = Properties.Settings.Default.SatelliteList;
+            if (!string.IsNullOrEmpty(satelliteListString))
             {
-                string[] lines = File.ReadAllLines("TLE.csv");
-                foreach (string line in lines)
+                string[] satelliteEntries = satelliteListString.Split(';');
+                foreach (string entry in satelliteEntries)
                 {
-                    string[] values = line.Split(',');
-                    if (values.Length >= 2)
+                    string[] parts = entry.Split(',');
+                    if (parts.Length == 2)
                     {
-                        TLE_listdata.Rows.Add(values[0], values[1]);
+                        string satellite = parts[0];
+                        string url = parts[1];
+                        TLE_listdata.Rows.Add(satellite, url);
                     }
                 }
             }
         }
-        private void SaveDataToCsvFile()
+        private void SaveDataToSettings()
         {
-            using (StreamWriter writer = new StreamWriter("TLE.csv"))
+            List<string> satelliteList = new List<string>();
+            foreach (DataRow row in TLE_listdata.Rows)
             {
-                foreach (DataRow row in TLE_listdata.Rows)
-                {
-                    string line = string.Join(",", row.ItemArray);
-                    writer.WriteLine(line);
-                }
+                string satellite = row["Satellite"].ToString();
+                string url = row["URL"].ToString();
+                string entry = $"{satellite},{url}";
+                satelliteList.Add(entry);
             }
+
+            Properties.Settings.Default.SatelliteList = string.Join(";", satelliteList);
+            Properties.Settings.Default.Save();
         }
 
         private void button_UpdateTLElist_Click(object sender, EventArgs e)
         {
             string pluginDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string directoryPath = Path.Combine(pluginDirectory, "TLE"); // CSV 文件保存的目录路径
+            string directoryPath = Path.Combine(pluginDirectory, "TLE"); //文件保存的目录路径
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath); // 如果目录不存在，创建目录
@@ -80,7 +86,7 @@ namespace SDRSharp.SDDE
             foreach (DataRow row in TLE_listdata.Rows)
             {
                 string satellite = row["Satellite"].ToString();
-                string url = row["URL(csv)"].ToString();
+                string url = row["URL"].ToString();
 
                 if (!IsUrlValid(url))
                 {
@@ -89,13 +95,13 @@ namespace SDRSharp.SDDE
                 }
 
 
-                // 根据 Satellite 列的值生成 CSV 文件名
-                string fileName = $"{satellite}.csv";
+                // 根据 Satellite 列的值生成 txt 文件名
+                string fileName = $"{satellite}.txt";
 
                 // 发送网络请求，获取数据
                 string data = FetchDataFromURL(url);
 
-                // 将数据保存为 CSV 文件
+                // 将数据保存为 txt 文件
                 string filePath = Path.Combine(directoryPath, fileName);
                 SaveDataToCsvFile(data, filePath);
             }
