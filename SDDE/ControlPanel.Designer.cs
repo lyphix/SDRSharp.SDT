@@ -41,6 +41,7 @@ namespace SDRSharp.SDDE
             dataGridView_Satellitepass = new System.Windows.Forms.DataGridView();
             textBox_Degree = new System.Windows.Forms.TextBox();
             label3 = new System.Windows.Forms.Label();
+            button_Update = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).BeginInit();
             SuspendLayout();
             // 
@@ -87,7 +88,7 @@ namespace SDRSharp.SDDE
             // 
             button_TLE.Location = new System.Drawing.Point(8, 64);
             button_TLE.Name = "button_TLE";
-            button_TLE.Size = new System.Drawing.Size(75, 23);
+            button_TLE.Size = new System.Drawing.Size(57, 23);
             button_TLE.TabIndex = 4;
             button_TLE.Text = "TLE";
             button_TLE.UseVisualStyleBackColor = true;
@@ -111,7 +112,7 @@ namespace SDRSharp.SDDE
             checkedListBox_Satellites.FormattingEnabled = true;
             checkedListBox_Satellites.Location = new System.Drawing.Point(8, 141);
             checkedListBox_Satellites.Name = "checkedListBox_Satellites";
-            checkedListBox_Satellites.Size = new System.Drawing.Size(285, 130);
+            checkedListBox_Satellites.Size = new System.Drawing.Size(285, 238);
             checkedListBox_Satellites.TabIndex = 7;
             // 
             // label_time
@@ -127,7 +128,7 @@ namespace SDRSharp.SDDE
             // 
             dataGridView_Satellitepass.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dataGridView_Satellitepass.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 277);
+            dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 385);
             dataGridView_Satellitepass.Name = "dataGridView_Satellitepass";
             dataGridView_Satellitepass.RowTemplate.Height = 25;
             dataGridView_Satellitepass.Size = new System.Drawing.Size(285, 109);
@@ -145,7 +146,7 @@ namespace SDRSharp.SDDE
             // 
             // label3
             // 
-            label3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            label3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             label3.AutoSize = true;
             label3.Location = new System.Drawing.Point(168, 67);
             label3.Name = "label3";
@@ -153,10 +154,21 @@ namespace SDRSharp.SDDE
             label3.TabIndex = 11;
             label3.Text = "Degree";
             // 
+            // button_Update
+            // 
+            button_Update.Location = new System.Drawing.Point(71, 64);
+            button_Update.Name = "button_Update";
+            button_Update.Size = new System.Drawing.Size(63, 23);
+            button_Update.TabIndex = 12;
+            button_Update.Text = "Update";
+            button_Update.UseVisualStyleBackColor = true;
+            button_Update.Click += button_Update_Click;
+            // 
             // ControlPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(button_Update);
             Controls.Add(label3);
             Controls.Add(textBox_Degree);
             Controls.Add(dataGridView_Satellitepass);
@@ -190,5 +202,6 @@ namespace SDRSharp.SDDE
         private System.Windows.Forms.DataGridView dataGridView_Satellitepass;
         private System.Windows.Forms.TextBox textBox_Degree;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button_Update;
     }
 }
