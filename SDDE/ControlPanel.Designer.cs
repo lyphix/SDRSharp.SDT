@@ -38,6 +38,10 @@ namespace SDRSharp.SDDE
             comboBox_Satelitetype = new System.Windows.Forms.ComboBox();
             checkedListBox_Satellites = new System.Windows.Forms.CheckedListBox();
             label_time = new System.Windows.Forms.Label();
+            dataGridView_Satellitepass = new System.Windows.Forms.DataGridView();
+            textBox_Degree = new System.Windows.Forms.TextBox();
+            label3 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).BeginInit();
             SuspendLayout();
             // 
             // textBox_Longitude
@@ -48,6 +52,7 @@ namespace SDRSharp.SDDE
             textBox_Longitude.Size = new System.Drawing.Size(210, 23);
             textBox_Longitude.TabIndex = 0;
             textBox_Longitude.Text = "0";
+            textBox_Longitude.TextChanged += textBox_Longitude_TextChanged;
             textBox_Longitude.Leave += textBox_Longitude_Leave;
             // 
             // textBox_Latitude
@@ -92,7 +97,7 @@ namespace SDRSharp.SDDE
             // 
             comboBox_Satelitetype.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             comboBox_Satelitetype.FormattingEnabled = true;
-            comboBox_Satelitetype.Location = new System.Drawing.Point(8, 93);
+            comboBox_Satelitetype.Location = new System.Drawing.Point(8, 110);
             comboBox_Satelitetype.Name = "comboBox_Satelitetype";
             comboBox_Satelitetype.Size = new System.Drawing.Size(285, 25);
             comboBox_Satelitetype.TabIndex = 5;
@@ -104,7 +109,7 @@ namespace SDRSharp.SDDE
             checkedListBox_Satellites.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             checkedListBox_Satellites.CheckOnClick = true;
             checkedListBox_Satellites.FormattingEnabled = true;
-            checkedListBox_Satellites.Location = new System.Drawing.Point(8, 124);
+            checkedListBox_Satellites.Location = new System.Drawing.Point(8, 141);
             checkedListBox_Satellites.Name = "checkedListBox_Satellites";
             checkedListBox_Satellites.Size = new System.Drawing.Size(285, 130);
             checkedListBox_Satellites.TabIndex = 7;
@@ -112,16 +117,49 @@ namespace SDRSharp.SDDE
             // label_time
             // 
             label_time.AutoSize = true;
-            label_time.Location = new System.Drawing.Point(89, 67);
+            label_time.Location = new System.Drawing.Point(8, 90);
             label_time.Name = "label_time";
             label_time.Size = new System.Drawing.Size(33, 17);
             label_time.TabIndex = 8;
             label_time.Text = "time";
             // 
+            // dataGridView_Satellitepass
+            // 
+            dataGridView_Satellitepass.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            dataGridView_Satellitepass.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 277);
+            dataGridView_Satellitepass.Name = "dataGridView_Satellitepass";
+            dataGridView_Satellitepass.RowTemplate.Height = 25;
+            dataGridView_Satellitepass.Size = new System.Drawing.Size(285, 109);
+            dataGridView_Satellitepass.TabIndex = 9;
+            // 
+            // textBox_Degree
+            // 
+            textBox_Degree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            textBox_Degree.Location = new System.Drawing.Point(225, 64);
+            textBox_Degree.Name = "textBox_Degree";
+            textBox_Degree.Size = new System.Drawing.Size(68, 23);
+            textBox_Degree.TabIndex = 10;
+            textBox_Degree.Text = "10";
+            textBox_Degree.TextChanged += textBox_Degree_TextChanged;
+            // 
+            // label3
+            // 
+            label3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(168, 67);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(51, 17);
+            label3.TabIndex = 11;
+            label3.Text = "Degree";
+            // 
             // ControlPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(label3);
+            Controls.Add(textBox_Degree);
+            Controls.Add(dataGridView_Satellitepass);
             Controls.Add(label_time);
             Controls.Add(checkedListBox_Satellites);
             Controls.Add(comboBox_Satelitetype);
@@ -131,8 +169,9 @@ namespace SDRSharp.SDDE
             Controls.Add(textBox_Latitude);
             Controls.Add(textBox_Longitude);
             Name = "ControlPanel";
-            Size = new System.Drawing.Size(296, 420);
+            Size = new System.Drawing.Size(296, 566);
             Load += ControlPanel_Load;
+            ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -148,5 +187,8 @@ namespace SDRSharp.SDDE
         private System.Windows.Forms.ComboBox comboBox_Satelitetype;
         private System.Windows.Forms.CheckedListBox checkedListBox_Satellites;
         private System.Windows.Forms.Label label_time;
+        private System.Windows.Forms.DataGridView dataGridView_Satellitepass;
+        private System.Windows.Forms.TextBox textBox_Degree;
+        private System.Windows.Forms.Label label3;
     }
 }

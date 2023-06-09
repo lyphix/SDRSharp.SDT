@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SGPdotNET.TLE;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -34,6 +35,7 @@ namespace SDRSharp.SDDE
             dataGridView1.Columns["URL"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             ReadDataFromSettings();
+
         }
 
         private void TLE_list_FormClosing(object sender, FormClosingEventArgs e)

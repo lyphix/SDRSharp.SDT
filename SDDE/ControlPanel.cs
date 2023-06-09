@@ -6,15 +6,23 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using CsvHelper;
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
 using System.Linq;
+using SGPdotNET;
+using SGPdotNET.CoordinateSystem;
+using SGPdotNET.Util;
+using SGPdotNET.TLE;
+using SGPdotNET.Observation;
+using Telerik.WinControls.VirtualKeyboard;
 
 namespace SDRSharp.SDDE
 {
     public partial class ControlPanel : UserControl
     {
+        private LocalTleProvider provider;
+        private Dictionary<int, Tle> tles;
+
         private ISharpControl _control;
 
         public ControlPanel(ISharpControl control)
@@ -55,7 +63,10 @@ namespace SDRSharp.SDDE
             timer.Tick += Timer_Tick;
             timer.Start();
 
+            LoadSatelliteTypes();
+
             LoadSettings();
+
 
         }
 
@@ -69,13 +80,12 @@ namespace SDRSharp.SDDE
 
             if (File.Exists(filePath))
             {
-                //DataTable csvData = ReadtxtFile(filePath);
-
-                //foreach (DataRow row in csvData.Rows)
-                //{
-                //    string objectName = row["OBJECT_NAME"].ToString();
-                //    checkedListBox_Satellites.Items.Add(objectName);
-                //}
+                provider = new LocalTleProvider(true, filePath);
+                tles = provider.GetTles();
+                foreach (var kvp in tles)
+                {
+                    checkedListBox_Satellites.Items.Add(kvp.Value.Name);
+                }
             }
         }
 
@@ -84,44 +94,13 @@ namespace SDRSharp.SDDE
             string directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TLE");
             if (Directory.Exists(directoryPath))
             {
-                string[] csvFiles = Directory.GetFiles(directoryPath, "*.txt");
-                foreach (string csvFile in csvFiles)
+                string[] txtFiles = Directory.GetFiles(directoryPath, "*.txt");
+                foreach (string txtFile in txtFiles)
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(csvFile);
+                    string fileName = Path.GetFileNameWithoutExtension(txtFile);
                     comboBox_Satelitetype.Items.Add(fileName);
                 }
             }
-        }
-        private DataTable ReadtxtFile(string filePath)
-        {
-            DataTable csvData = new DataTable();
-
-            using (var parser = new TextFieldParser(filePath))
-            {
-                parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(",");
-
-                bool isFirstRow = true;
-                while (!parser.EndOfData)
-                {
-                    string[] fields = parser.ReadFields();
-
-                    if (isFirstRow)
-                    {
-                        foreach (string field in fields)
-                        {
-                            csvData.Columns.Add(field);
-                        }
-                        isFirstRow = false;
-                    }
-                    else
-                    {
-                        csvData.Rows.Add(fields);
-                    }
-                }
-            }
-
-            return csvData;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -129,6 +108,55 @@ namespace SDRSharp.SDDE
             // 更新 Label 的文本为当前时间
             label_time.Text = DateTime.Now.ToString("HH:mm:ss");
             SaveSettings();
+
+            if (provider != null && tles != null)
+            {
+                // Get latitude and longitude from text boxes
+                double latitude = double.Parse(textBox_Latitude.Text);
+                double longitude = double.Parse(textBox_Longitude.Text);
+
+                // Set up our ground station location
+                var location = new GeodeticCoordinate(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
+
+                // Create a ground station
+                var groundStation = new GroundStation(location);
+
+                List<SatelliteVisibilityPeriod> allObservations = new List<SatelliteVisibilityPeriod>();
+
+                foreach (var item in checkedListBox_Satellites.CheckedItems)
+                {
+                    foreach (var kvp in tles)
+                    {
+                        if (kvp.Value.Name == item.ToString())
+                        {
+                            // Create a satellite from the TLE
+                            var sat = new Satellite(kvp.Value.Name, kvp.Value.Line1, kvp.Value.Line2);
+
+                            // Observe the satellite
+                            double degree = double.Parse(textBox_Degree.Text);
+
+                            var observations = groundStation.Observe(
+                                sat,
+                                DateTime.UtcNow,
+                                DateTime.UtcNow + TimeSpan.FromHours(24),
+                                TimeSpan.FromSeconds(10),
+                                minElevation: Angle.FromDegrees(degree),
+                                clipToEndTime: true
+                            );
+
+                            // 将这个卫星的所有观测结果加入到allObservations列表中
+                            allObservations.AddRange(observations);
+
+                        }
+                    }
+                }
+
+                allObservations.Sort((a, b) => a.Start.CompareTo(b.Start));
+                dataGridView_Satellitepass.DataSource = allObservations;
+
+            }
+
+
         }
         private void SaveSettings()
         {
@@ -204,6 +232,20 @@ namespace SDRSharp.SDDE
         {
             comboBox_Satelitetype.Items.Clear();
             LoadSatelliteTypes();
+        }
+
+        private void textBox_Degree_TextChanged(object sender, EventArgs e)
+        {
+            double degree;
+            if (!double.TryParse(textBox_Degree.Text, out degree) || degree < 0 || degree > 90)
+            {
+                textBox_Longitude.Text = "10";
+            }
+        }
+
+        private void textBox_Longitude_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
