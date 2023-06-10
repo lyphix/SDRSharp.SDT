@@ -17,7 +17,12 @@
 mono_crash.*
 
 # Build results
-[Dd]ebug/
+[Dd]ebug/*
+![Dd]ebug/net7.0-windows/
+[Dd]ebug/net7.0-windows/*
+![Dd]ebug/net7.0-windows/SDRSharp.config
+![Dd]ebug/net7.0-windows/SDRSharp.Layout.xml
+![Dd]ebug/net7.0-windows/SGP.NET.dll
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
@@ -27,7 +32,7 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
+#[Bb]in/
 [Oo]bj/
 [Oo]ut/
 [Ll]og/
@@ -361,3 +366,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
