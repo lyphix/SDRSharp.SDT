@@ -86,7 +86,7 @@ namespace SDRSharp.SDDE
             // 
             // button_TLE
             // 
-            button_TLE.Location = new System.Drawing.Point(8, 64);
+            button_TLE.Location = new System.Drawing.Point(8, 93);
             button_TLE.Name = "button_TLE";
             button_TLE.Size = new System.Drawing.Size(57, 23);
             button_TLE.TabIndex = 4;
@@ -98,7 +98,7 @@ namespace SDRSharp.SDDE
             // 
             comboBox_Satelitetype.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             comboBox_Satelitetype.FormattingEnabled = true;
-            comboBox_Satelitetype.Location = new System.Drawing.Point(8, 110);
+            comboBox_Satelitetype.Location = new System.Drawing.Point(8, 122);
             comboBox_Satelitetype.Name = "comboBox_Satelitetype";
             comboBox_Satelitetype.Size = new System.Drawing.Size(285, 25);
             comboBox_Satelitetype.TabIndex = 5;
@@ -110,15 +110,16 @@ namespace SDRSharp.SDDE
             checkedListBox_Satellites.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             checkedListBox_Satellites.CheckOnClick = true;
             checkedListBox_Satellites.FormattingEnabled = true;
-            checkedListBox_Satellites.Location = new System.Drawing.Point(8, 141);
+            checkedListBox_Satellites.Location = new System.Drawing.Point(8, 153);
             checkedListBox_Satellites.Name = "checkedListBox_Satellites";
             checkedListBox_Satellites.Size = new System.Drawing.Size(285, 238);
             checkedListBox_Satellites.TabIndex = 7;
             // 
             // label_time
             // 
+            label_time.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             label_time.AutoSize = true;
-            label_time.Location = new System.Drawing.Point(8, 90);
+            label_time.Location = new System.Drawing.Point(140, 96);
             label_time.Name = "label_time";
             label_time.Size = new System.Drawing.Size(33, 17);
             label_time.TabIndex = 8;
@@ -128,7 +129,7 @@ namespace SDRSharp.SDDE
             // 
             dataGridView_Satellitepass.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dataGridView_Satellitepass.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 385);
+            dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 397);
             dataGridView_Satellitepass.Name = "dataGridView_Satellitepass";
             dataGridView_Satellitepass.RowTemplate.Height = 25;
             dataGridView_Satellitepass.Size = new System.Drawing.Size(285, 109);
@@ -137,9 +138,9 @@ namespace SDRSharp.SDDE
             // textBox_Degree
             // 
             textBox_Degree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            textBox_Degree.Location = new System.Drawing.Point(225, 64);
+            textBox_Degree.Location = new System.Drawing.Point(83, 64);
             textBox_Degree.Name = "textBox_Degree";
-            textBox_Degree.Size = new System.Drawing.Size(68, 23);
+            textBox_Degree.Size = new System.Drawing.Size(210, 23);
             textBox_Degree.TabIndex = 10;
             textBox_Degree.Text = "10";
             textBox_Degree.TextChanged += textBox_Degree_TextChanged;
@@ -148,15 +149,15 @@ namespace SDRSharp.SDDE
             // 
             label3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(168, 67);
+            label3.Location = new System.Drawing.Point(8, 67);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(51, 17);
+            label3.Size = new System.Drawing.Size(54, 17);
             label3.TabIndex = 11;
-            label3.Text = "Degree";
+            label3.Text = "Degree:";
             // 
             // button_Update
             // 
-            button_Update.Location = new System.Drawing.Point(71, 64);
+            button_Update.Location = new System.Drawing.Point(71, 93);
             button_Update.Name = "button_Update";
             button_Update.Size = new System.Drawing.Size(63, 23);
             button_Update.TabIndex = 12;
