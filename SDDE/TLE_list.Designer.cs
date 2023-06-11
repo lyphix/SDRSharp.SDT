@@ -67,13 +67,13 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new System.Drawing.Size(364, 281);
+            dataGridView1.Size = new System.Drawing.Size(504, 228);
             dataGridView1.TabIndex = 0;
             // 
             // button_UpdateTLElist
             // 
             button_UpdateTLElist.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            button_UpdateTLElist.Location = new System.Drawing.Point(301, 299);
+            button_UpdateTLElist.Location = new System.Drawing.Point(441, 246);
             button_UpdateTLElist.Name = "button_UpdateTLElist";
             button_UpdateTLElist.Size = new System.Drawing.Size(75, 23);
             button_UpdateTLElist.TabIndex = 1;
@@ -85,11 +85,13 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(388, 334);
+            ClientSize = new System.Drawing.Size(528, 281);
             Controls.Add(button_UpdateTLElist);
             Controls.Add(dataGridView1);
             Name = "TLE_list";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "TLE_list";
+            TopMost = true;
             FormClosing += TLE_list_FormClosing;
             Load += TLE_list_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();

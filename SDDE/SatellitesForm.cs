@@ -83,7 +83,6 @@ namespace SDRSharp.SDDE
 
         private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
         }
 
         private void checkedListBox_Satellites_ItemCheck(object sender, ItemCheckEventArgs e)

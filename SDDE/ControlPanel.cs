@@ -16,6 +16,7 @@ using SGPdotNET.TLE;
 using SGPdotNET.Observation;
 using Telerik.WinControls.VirtualKeyboard;
 using System.Text;
+using System.Drawing;
 
 namespace SDRSharp.SDDE
 {
@@ -53,6 +54,13 @@ namespace SDRSharp.SDDE
         {
             TLE_list tLE_List = new();
             tLE_List.Show();
+            tLE_List.FormClosing += TLE_List_FormClosing;
+            button_TLE.Enabled = false;
+        }
+
+        private void TLE_List_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            button_TLE.Enabled = true;
         }
 
         private void ControlPanel_Load(object sender, EventArgs e)
@@ -69,9 +77,6 @@ namespace SDRSharp.SDDE
 
 
         }
-
-
-
 
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -220,8 +225,16 @@ namespace SDRSharp.SDDE
         {
             SatellitesForm satellitesForm = new SatellitesForm(alltles);
             satellitesForm.Show();
+            satellitesForm.FormClosing += SatellitesForm_FormClosing;
+            button_Satellites.Enabled = false;
+
+
         }
 
+        private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            button_Satellites.Enabled = true;
+        }
         private Dictionary<string, Dictionary<int, Tle>> ReadAlltles()
         {
             string directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TLE");
@@ -249,7 +262,6 @@ namespace SDRSharp.SDDE
             }
         }
 
-        
     }
     public static class SatKey
     {
@@ -260,4 +272,6 @@ namespace SDRSharp.SDDE
             CheckedTlesKey = new List<int>();
         }
     }
+
+
 }

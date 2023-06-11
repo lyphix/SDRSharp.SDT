@@ -74,7 +74,9 @@
             Controls.Add(label_Satellites_Type);
             Controls.Add(comboBox_SatellitesType);
             Name = "SatellitesForm";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "SatellitesForm";
+            TopMost = true;
             FormClosing += SatellitesForm_FormClosing;
             Load += SatellitesForm_Load;
             ResumeLayout(false);
