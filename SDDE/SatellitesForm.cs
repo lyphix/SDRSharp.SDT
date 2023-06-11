@@ -16,7 +16,6 @@ namespace SDRSharp.SDDE
 {
     public partial class SatellitesForm : Form
     {
-        private LocalTleProvider provider;
         private Dictionary<string, Dictionary<int, Tle>> _alltles = new();
 
         public SatellitesForm(Dictionary<string, Dictionary<int, Tle>> alltles)

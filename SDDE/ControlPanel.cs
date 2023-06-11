@@ -20,6 +20,15 @@ using System.Drawing;
 
 namespace SDRSharp.SDDE
 {
+    public static class SatKey
+    {
+        public static List<int> CheckedTlesKey { get; set; }
+
+        static SatKey()
+        {
+            CheckedTlesKey = new List<int>();
+        }
+    }
     public partial class ControlPanel : UserControl
     {
 
@@ -77,6 +86,8 @@ namespace SDRSharp.SDDE
 
 
         }
+
+
 
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -278,15 +289,7 @@ namespace SDRSharp.SDDE
         }
 
     }
-    public static class SatKey
-    {
-        public static List<int> CheckedTlesKey { get; set; }
 
-        static SatKey()
-        {
-            CheckedTlesKey = new List<int>();
-        }
-    }
 
 
 }

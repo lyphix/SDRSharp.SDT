@@ -110,7 +110,7 @@ namespace SDRSharp.SDDE
             dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 122);
             dataGridView_Satellitepass.Name = "dataGridView_Satellitepass";
             dataGridView_Satellitepass.RowTemplate.Height = 25;
-            dataGridView_Satellitepass.Size = new System.Drawing.Size(285, 109);
+            dataGridView_Satellitepass.Size = new System.Drawing.Size(285, 320);
             dataGridView_Satellitepass.TabIndex = 9;
             // 
             // textBox_Degree
