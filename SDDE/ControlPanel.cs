@@ -81,6 +81,10 @@ namespace SDRSharp.SDDE
         private void Timer_Tick(object sender, EventArgs e)
         {
             // 更新 Label 的文本为当前时间
+            int selectedRowIndex = dataGridView_Satellitepass.CurrentCell?.RowIndex ?? -1;
+            int selectedColumnIndex = dataGridView_Satellitepass.CurrentCell?.ColumnIndex ?? -1;
+            int scrollPosition = dataGridView_Satellitepass.FirstDisplayedScrollingRowIndex;
+
             label_time.Text = DateTime.Now.ToString("HH:mm:ss");
             SaveSettings();
 
@@ -95,7 +99,7 @@ namespace SDRSharp.SDDE
 
                 DateTime start = observation.VisibilityPeriod.Start;
                 TimeSpan countdown = start - DateTime.UtcNow;
-                string formattedCountdown = countdown.ToString(@"dd\.hh\:mm\:ss");
+                string formattedCountdown = countdown.ToString(@"hh\:mm\:ss");
 
                 row["Countdown"] = formattedCountdown;
 
@@ -103,6 +107,16 @@ namespace SDRSharp.SDDE
             }
 
             dataGridView_Satellitepass.DataSource = dataTable;
+
+            if (selectedRowIndex >= 0 && selectedRowIndex < dataGridView_Satellitepass.Rows.Count &&
+                selectedColumnIndex >= 0 && selectedColumnIndex < dataGridView_Satellitepass.Columns.Count)
+            {
+                dataGridView_Satellitepass.CurrentCell = dataGridView_Satellitepass[selectedColumnIndex, selectedRowIndex];
+            }
+            if (scrollPosition >= 0 && scrollPosition < dataGridView_Satellitepass.Rows.Count)
+            {
+                dataGridView_Satellitepass.FirstDisplayedScrollingRowIndex = scrollPosition;
+            }
 
 
         }
@@ -168,57 +182,60 @@ namespace SDRSharp.SDDE
 
         private void button_Update_Click(object sender, EventArgs e)
         {
-
+            alltles = ReadAlltles();
+            List<int> keys = SatKey.CheckedTlesKey;
             allObservations.Clear();
-            //if (provider != null && alltles != null)
-            //{
-            //    // Get latitude and longitude from text boxes
-            //    double latitude = double.Parse(textBox_Latitude.Text);
-            //    double longitude = double.Parse(textBox_Longitude.Text);
+            if (keys != null && alltles != null)
+            {
+                // Get latitude and longitude from text boxes
+                double latitude = double.Parse(textBox_Latitude.Text);
+                double longitude = double.Parse(textBox_Longitude.Text);
 
-            //    // Set up our ground station location
-            //    var location = new GeodeticCoordinate(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
+                // Set up our ground station location
+                var location = new GeodeticCoordinate(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
 
-            //    // Create a ground station
-            //    var groundStation = new GroundStation(location);
+                // Create a ground station
+                var groundStation = new GroundStation(location);
+                foreach (int key in keys)
+                {
+                    foreach (Dictionary<int, Tle> tles in alltles.Values)
+                    {
+                        if (tles.ContainsKey(key))
+                        {
+                            Tle tle = tles[key];
+                            var sat = new Satellite(tle.Name, tle.Line1, tle.Line2);
+                            // Observe the satellite
+                            double degree = double.Parse(textBox_Degree.Text);
 
-            //    foreach (var item in checkedListBox_Satellites.CheckedItems)
-            //    {
-            //        foreach (var kvp in alltles)
-            //        {
-            //            if (kvp.Value.Name == item.ToString())
-            //            {
-            //                // Create a satellite from the TLE
-            //                var sat = new Satellite(kvp.Value.Name, kvp.Value.Line1, kvp.Value.Line2);
+                            var observations = groundStation.Observe(
+                                sat,
+                                DateTime.UtcNow,
+                                DateTime.UtcNow + TimeSpan.FromHours(24),
+                                TimeSpan.FromSeconds(10),
+                                minElevation: Angle.FromDegrees(degree),
+                                clipToEndTime: true
+                            );
 
-            //                // Observe the satellite
-            //                double degree = double.Parse(textBox_Degree.Text);
+                            var topocentricObservation = groundStation.Observe(sat, DateTime.UtcNow);
+                            //var DopplerShift = topocentricObservation.GetDopplerShift(inputFrequency);
 
-            //                var observations = groundStation.Observe(
-            //                    sat,
-            //                    DateTime.UtcNow,
-            //                    DateTime.UtcNow + TimeSpan.FromHours(24),
-            //                    TimeSpan.FromSeconds(10),
-            //                    minElevation: Angle.FromDegrees(degree),
-            //                    clipToEndTime: true
-            //                );
 
-            //                // 将这个卫星的所有观测结果加入到allObservations列表中
-            //                foreach (var observation in observations)
-            //                {
-            //                    var satelliteObservation = new SatelliteObservation
-            //                    {
-            //                        SatelliteName = kvp.Value.Name,
-            //                        VisibilityPeriod = observation
-            //                    };
-            //                    allObservations.Add(satelliteObservation);
-            //                }
-            //            }
-            //        }
-            //    }
-            //    allObservations.Sort((a, b) => a.VisibilityPeriod.Start.CompareTo(b.VisibilityPeriod.Start));
+                            foreach (var observation in observations)
+                            {
 
-            //}
+                                var satelliteObservation = new SatelliteObservation
+                                {
+                                    SatelliteName = tle.Name,
+                                    VisibilityPeriod = observation
+                                };
+                                allObservations.Add(satelliteObservation);
+                            }
+                        }
+                    }
+                }
+                allObservations.Sort((a, b) => a.VisibilityPeriod.Start.CompareTo(b.VisibilityPeriod.Start));
+
+            }
         }
 
         private void button_Satellites_Click(object sender, EventArgs e)
@@ -227,8 +244,6 @@ namespace SDRSharp.SDDE
             satellitesForm.Show();
             satellitesForm.FormClosing += SatellitesForm_FormClosing;
             button_Satellites.Enabled = false;
-
-
         }
 
         private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)
