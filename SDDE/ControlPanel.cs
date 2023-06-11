@@ -15,16 +15,16 @@ using SGPdotNET.Util;
 using SGPdotNET.TLE;
 using SGPdotNET.Observation;
 using Telerik.WinControls.VirtualKeyboard;
+using System.Text;
 
 namespace SDRSharp.SDDE
 {
     public partial class ControlPanel : UserControl
     {
-        private LocalTleProvider provider;
-        private Dictionary<int, Tle> tles;
+
         private List<SatelliteObservation> allObservations = new List<SatelliteObservation>();
         private ISharpControl _control;
-
+        private Dictionary<string, Dictionary<int, Tle>> alltles = new();
         public ControlPanel(ISharpControl control)
         {
             _control = control;
@@ -51,7 +51,7 @@ namespace SDRSharp.SDDE
 
         private void button_TLE_Click(object sender, EventArgs e)
         {
-            TLE_list tLE_List = new TLE_list();
+            TLE_list tLE_List = new();
             tLE_List.Show();
         }
 
@@ -63,45 +63,15 @@ namespace SDRSharp.SDDE
             timer.Tick += Timer_Tick;
             timer.Start();
 
-            LoadSatelliteTypes();
 
             LoadSettings();
+            alltles = ReadAlltles();
 
 
         }
 
-        private void comboBox_Satelitetype_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            checkedListBox_Satellites.Items.Clear(); // 清空列表
 
-            string selectedFileName = comboBox_Satelitetype.SelectedItem.ToString();
-            string directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TLE");
-            string filePath = Path.Combine(directoryPath, $"{selectedFileName}.txt");
 
-            if (File.Exists(filePath))
-            {
-                provider = new LocalTleProvider(true, filePath);
-                tles = provider.GetTles();
-                foreach (var kvp in tles)
-                {
-                    checkedListBox_Satellites.Items.Add(kvp.Value.Name);
-                }
-            }
-        }
-
-        private void LoadSatelliteTypes()
-        {
-            string directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TLE");
-            if (Directory.Exists(directoryPath))
-            {
-                string[] txtFiles = Directory.GetFiles(directoryPath, "*.txt");
-                foreach (string txtFile in txtFiles)
-                {
-                    string fileName = Path.GetFileNameWithoutExtension(txtFile);
-                    comboBox_Satelitetype.Items.Add(fileName);
-                }
-            }
-        }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -133,24 +103,10 @@ namespace SDRSharp.SDDE
         }
         private void SaveSettings()
         {
-            // 保存 SatelliteType 的选择
-            if (comboBox_Satelitetype.SelectedItem != null)
-            {
-                Properties.Settings.Default.SatelliteType = comboBox_Satelitetype.SelectedItem.ToString();
-            }
 
-            // 保存 SelectedSatellites 的选择
-            List<string> selectedSatellites = new List<string>();
-            foreach (var item in checkedListBox_Satellites.CheckedItems)
-            {
-                selectedSatellites.Add(item.ToString());
-            }
 
-            if (selectedSatellites.Count > 0)
-            {
-                Properties.Settings.Default.SelectedSatellites = new System.Collections.Specialized.StringCollection();
-                Properties.Settings.Default.SelectedSatellites.AddRange(selectedSatellites.ToArray());
-            }
+            // 保存 Satellites 的选择
+
 
             // 保存经度和纬度的值
             if (!string.IsNullOrEmpty(textBox_Longitude.Text))
@@ -170,25 +126,8 @@ namespace SDRSharp.SDDE
 
         private void LoadSettings()
         {
-            // 恢复 SatelliteType 的选择
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.SatelliteType))
-            {
-                comboBox_Satelitetype.SelectedItem = Properties.Settings.Default.SatelliteType;
-            }
 
             // 恢复 SelectedSatellites 的选择
-            if (Properties.Settings.Default.SelectedSatellites != null)
-            {
-                List<string> selectedSatellites = new List<string>(Properties.Settings.Default.SelectedSatellites.Cast<string>());
-                foreach (string satellite in selectedSatellites)
-                {
-                    int index = checkedListBox_Satellites.FindStringExact(satellite);
-                    if (index != ListBox.NoMatches)
-                    {
-                        checkedListBox_Satellites.SetItemChecked(index, true);
-                    }
-                }
-            }
 
             // 恢复经度和纬度的值
             if (!string.IsNullOrEmpty(Properties.Settings.Default.Longitude))
@@ -201,11 +140,6 @@ namespace SDRSharp.SDDE
             }
         }
 
-        private void comboBox_Satelitetype_DropDown(object sender, EventArgs e)
-        {
-            comboBox_Satelitetype.Items.Clear();
-            LoadSatelliteTypes();
-        }
 
         private void textBox_Degree_TextChanged(object sender, EventArgs e)
         {
@@ -229,56 +163,101 @@ namespace SDRSharp.SDDE
 
         private void button_Update_Click(object sender, EventArgs e)
         {
+
             allObservations.Clear();
-            if (provider != null && tles != null)
+            //if (provider != null && alltles != null)
+            //{
+            //    // Get latitude and longitude from text boxes
+            //    double latitude = double.Parse(textBox_Latitude.Text);
+            //    double longitude = double.Parse(textBox_Longitude.Text);
+
+            //    // Set up our ground station location
+            //    var location = new GeodeticCoordinate(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
+
+            //    // Create a ground station
+            //    var groundStation = new GroundStation(location);
+
+            //    foreach (var item in checkedListBox_Satellites.CheckedItems)
+            //    {
+            //        foreach (var kvp in alltles)
+            //        {
+            //            if (kvp.Value.Name == item.ToString())
+            //            {
+            //                // Create a satellite from the TLE
+            //                var sat = new Satellite(kvp.Value.Name, kvp.Value.Line1, kvp.Value.Line2);
+
+            //                // Observe the satellite
+            //                double degree = double.Parse(textBox_Degree.Text);
+
+            //                var observations = groundStation.Observe(
+            //                    sat,
+            //                    DateTime.UtcNow,
+            //                    DateTime.UtcNow + TimeSpan.FromHours(24),
+            //                    TimeSpan.FromSeconds(10),
+            //                    minElevation: Angle.FromDegrees(degree),
+            //                    clipToEndTime: true
+            //                );
+
+            //                // 将这个卫星的所有观测结果加入到allObservations列表中
+            //                foreach (var observation in observations)
+            //                {
+            //                    var satelliteObservation = new SatelliteObservation
+            //                    {
+            //                        SatelliteName = kvp.Value.Name,
+            //                        VisibilityPeriod = observation
+            //                    };
+            //                    allObservations.Add(satelliteObservation);
+            //                }
+            //            }
+            //        }
+            //    }
+            //    allObservations.Sort((a, b) => a.VisibilityPeriod.Start.CompareTo(b.VisibilityPeriod.Start));
+
+            //}
+        }
+
+        private void button_Satellites_Click(object sender, EventArgs e)
+        {
+            SatellitesForm satellitesForm = new SatellitesForm(alltles);
+            satellitesForm.Show();
+        }
+
+        private Dictionary<string, Dictionary<int, Tle>> ReadAlltles()
+        {
+            string directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TLE");
+            Dictionary<string, Dictionary<int, Tle>> alltles = new();
+            if (Directory.Exists(directoryPath))
             {
-                // Get latitude and longitude from text boxes
-                double latitude = double.Parse(textBox_Latitude.Text);
-                double longitude = double.Parse(textBox_Longitude.Text);
-
-                // Set up our ground station location
-                var location = new GeodeticCoordinate(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
-
-                // Create a ground station
-                var groundStation = new GroundStation(location);
-
-                foreach (var item in checkedListBox_Satellites.CheckedItems)
+                string[] txtFiles = Directory.GetFiles(directoryPath, "*.txt");
+                if (txtFiles.Length == 0)
                 {
-                    foreach (var kvp in tles)
-                    {
-                        if (kvp.Value.Name == item.ToString())
-                        {
-                            // Create a satellite from the TLE
-                            var sat = new Satellite(kvp.Value.Name, kvp.Value.Line1, kvp.Value.Line2);
-
-                            // Observe the satellite
-                            double degree = double.Parse(textBox_Degree.Text);
-
-                            var observations = groundStation.Observe(
-                                sat,
-                                DateTime.UtcNow,
-                                DateTime.UtcNow + TimeSpan.FromHours(24),
-                                TimeSpan.FromSeconds(10),
-                                minElevation: Angle.FromDegrees(degree),
-                                clipToEndTime: true
-                            );
-
-                            // 将这个卫星的所有观测结果加入到allObservations列表中
-                            foreach (var observation in observations)
-                            {
-                                var satelliteObservation = new SatelliteObservation
-                                {
-                                    SatelliteName = kvp.Value.Name,
-                                    VisibilityPeriod = observation
-                                };
-                                allObservations.Add(satelliteObservation);
-                            }
-                        }
-                    }
+                    return null;
                 }
-                allObservations.Sort((a, b) => a.VisibilityPeriod.Start.CompareTo(b.VisibilityPeriod.Start));
-
+                foreach (string txtFile in txtFiles)
+                {
+                    //把所有TLE目录下的卫星都存到alltles
+                    string filePath = Path.Combine(directoryPath, txtFile);
+                    LocalTleProvider provider = new LocalTleProvider(true, filePath);
+                    Dictionary<int, Tle> tles = provider.GetTles();
+                    alltles.Add(filePath, tles);
+                }
+                return alltles;
             }
+            else
+            {
+                return null;
+            }
+        }
+
+        
+    }
+    public static class SatKey
+    {
+        public static List<int> CheckedTlesKey { get; set; }
+
+        static SatKey()
+        {
+            CheckedTlesKey = new List<int>();
         }
     }
 }

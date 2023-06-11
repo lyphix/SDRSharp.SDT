@@ -61,12 +61,13 @@ namespace SDRSharp.SDDE.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection SelectedSatellites {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SatellitesForm_SelectSatelliteType {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["SelectedSatellites"]));
+                return ((int)(this["SatellitesForm_SelectSatelliteType"]));
             }
             set {
-                this["SelectedSatellites"] = value;
+                this["SatellitesForm_SelectSatelliteType"] = value;
             }
         }
         

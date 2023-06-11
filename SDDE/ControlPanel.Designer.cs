@@ -35,13 +35,12 @@ namespace SDRSharp.SDDE
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             button_TLE = new System.Windows.Forms.Button();
-            comboBox_Satelitetype = new System.Windows.Forms.ComboBox();
-            checkedListBox_Satellites = new System.Windows.Forms.CheckedListBox();
             label_time = new System.Windows.Forms.Label();
             dataGridView_Satellitepass = new System.Windows.Forms.DataGridView();
             textBox_Degree = new System.Windows.Forms.TextBox();
             label3 = new System.Windows.Forms.Label();
             button_Update = new System.Windows.Forms.Button();
+            button_Satellites = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).BeginInit();
             SuspendLayout();
             // 
@@ -94,32 +93,11 @@ namespace SDRSharp.SDDE
             button_TLE.UseVisualStyleBackColor = true;
             button_TLE.Click += button_TLE_Click;
             // 
-            // comboBox_Satelitetype
-            // 
-            comboBox_Satelitetype.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            comboBox_Satelitetype.FormattingEnabled = true;
-            comboBox_Satelitetype.Location = new System.Drawing.Point(8, 122);
-            comboBox_Satelitetype.Name = "comboBox_Satelitetype";
-            comboBox_Satelitetype.Size = new System.Drawing.Size(285, 25);
-            comboBox_Satelitetype.TabIndex = 5;
-            comboBox_Satelitetype.DropDown += comboBox_Satelitetype_DropDown;
-            comboBox_Satelitetype.SelectedIndexChanged += comboBox_Satelitetype_SelectedIndexChanged;
-            // 
-            // checkedListBox_Satellites
-            // 
-            checkedListBox_Satellites.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            checkedListBox_Satellites.CheckOnClick = true;
-            checkedListBox_Satellites.FormattingEnabled = true;
-            checkedListBox_Satellites.Location = new System.Drawing.Point(8, 153);
-            checkedListBox_Satellites.Name = "checkedListBox_Satellites";
-            checkedListBox_Satellites.Size = new System.Drawing.Size(285, 238);
-            checkedListBox_Satellites.TabIndex = 7;
-            // 
             // label_time
             // 
             label_time.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             label_time.AutoSize = true;
-            label_time.Location = new System.Drawing.Point(140, 96);
+            label_time.Location = new System.Drawing.Point(245, 93);
             label_time.Name = "label_time";
             label_time.Size = new System.Drawing.Size(33, 17);
             label_time.TabIndex = 8;
@@ -129,7 +107,7 @@ namespace SDRSharp.SDDE
             // 
             dataGridView_Satellitepass.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dataGridView_Satellitepass.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 397);
+            dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 122);
             dataGridView_Satellitepass.Name = "dataGridView_Satellitepass";
             dataGridView_Satellitepass.RowTemplate.Height = 25;
             dataGridView_Satellitepass.Size = new System.Drawing.Size(285, 109);
@@ -157,7 +135,7 @@ namespace SDRSharp.SDDE
             // 
             // button_Update
             // 
-            button_Update.Location = new System.Drawing.Point(71, 93);
+            button_Update.Location = new System.Drawing.Point(152, 93);
             button_Update.Name = "button_Update";
             button_Update.Size = new System.Drawing.Size(63, 23);
             button_Update.TabIndex = 12;
@@ -165,17 +143,26 @@ namespace SDRSharp.SDDE
             button_Update.UseVisualStyleBackColor = true;
             button_Update.Click += button_Update_Click;
             // 
+            // button_Satellites
+            // 
+            button_Satellites.Location = new System.Drawing.Point(71, 93);
+            button_Satellites.Name = "button_Satellites";
+            button_Satellites.Size = new System.Drawing.Size(75, 23);
+            button_Satellites.TabIndex = 13;
+            button_Satellites.Text = "Satellites";
+            button_Satellites.UseVisualStyleBackColor = true;
+            button_Satellites.Click += button_Satellites_Click;
+            // 
             // ControlPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(button_Satellites);
             Controls.Add(button_Update);
             Controls.Add(label3);
             Controls.Add(textBox_Degree);
             Controls.Add(dataGridView_Satellitepass);
             Controls.Add(label_time);
-            Controls.Add(checkedListBox_Satellites);
-            Controls.Add(comboBox_Satelitetype);
             Controls.Add(button_TLE);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -197,12 +184,11 @@ namespace SDRSharp.SDDE
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button_TLE;
-        private System.Windows.Forms.ComboBox comboBox_Satelitetype;
-        private System.Windows.Forms.CheckedListBox checkedListBox_Satellites;
         private System.Windows.Forms.Label label_time;
         private System.Windows.Forms.DataGridView dataGridView_Satellitepass;
         private System.Windows.Forms.TextBox textBox_Degree;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button_Update;
+        private System.Windows.Forms.Button button_Satellites;
     }
 }
