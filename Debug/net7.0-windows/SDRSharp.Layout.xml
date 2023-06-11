@@ -195,7 +195,7 @@
         </Telerik.WinControls.UI.RadSplitContainer>
       </Controls>
     </Telerik.WinControls.UI.RadSplitContainer>
-    <Telerik.WinControls.UI.Docking.ToolTabStrip Size="1110, 200" Location="0, 482" ThemeName="FluentDark" Name="DockTabStrip2" TabIndex="7" TabStop="False">
+    <Telerik.WinControls.UI.Docking.ToolTabStrip Size="1110, 200" Location="0, 482" ThemeName="FluentDark" Name="DockTabStrip2" TabIndex="8" TabStop="False">
       <SizeInfo SplitterCorrection="0, 0" AutoSizeScale="0, 0" />
       <Controls>
         <Telerik.WinControls.UI.Docking.ToolWindow Caption="IF Filter + Notch Processor *" AllowedDockState="Docked, Hidden, Floating" PreviousDockState="Docked" DesiredDockState="Hidden" Name="&lt;Unknown&gt;/SDRSharp.PanView.SpectrumAnalyzer/IF Filter + Notch Processor */1" Size="1102, 161" Location="4, 35" AutoScroll="True" Font="Segoe UI, 9pt" Text="IF Filter + Notch Processor *" />
