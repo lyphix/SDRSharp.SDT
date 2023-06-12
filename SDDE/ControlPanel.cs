@@ -173,17 +173,18 @@ namespace SDRSharp.SDDE
                 row["SatelliteName"] = observation.SatelliteName;
 
                 DateTime start = observation.VisibilityPeriod.Start;
+                DateTime end = observation.VisibilityPeriod.End;
                 TimeSpan countdown;
                 string formattedCountdown;
-                if (start > DateTime.UtcNow)
+                if (end > DateTime.UtcNow && start > DateTime.UtcNow)
                 {
                     countdown = start - DateTime.UtcNow;
-                    formattedCountdown = "- " + countdown.ToString(@"hh\:mm\:ss");
+                    formattedCountdown = countdown.ToString(@"hh\:mm\:ss");
                 }
                 else
                 {
-                    countdown = DateTime.UtcNow - start;
-                    formattedCountdown = "+ " + countdown.ToString(@"hh\:mm\:ss");
+                    countdown = end - DateTime.UtcNow;
+                    formattedCountdown = "* " + countdown.ToString(@"hh\:mm\:ss");
                 }
 
                 row["Countdown"] = formattedCountdown;
@@ -384,12 +385,12 @@ namespace SDRSharp.SDDE
 
                             var observations = groundStation.Observe(
                                 sat,
-                                DateTime.UtcNow,
+                                DateTime.UtcNow - TimeSpan.FromMinutes(10),
                                 DateTime.UtcNow + TimeSpan.FromHours(24),
                                 TimeSpan.FromSeconds(10),
                                 minElevation: Angle.FromDegrees(degree),
-                                clipToEndTime: true
-                            );
+                                clipToStartTime: true
+                            ) ;
                             var inputFrequency = double.Parse(textBox_freq.Text);
                             var topocentricObservation = groundStation.Observe(sat, DateTime.UtcNow);
                             var DopplerShift = topocentricObservation.GetDopplerShift(inputFrequency) + inputFrequency;
