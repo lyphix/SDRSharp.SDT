@@ -41,6 +41,10 @@ namespace SDRSharp.SDDE
             label3 = new System.Windows.Forms.Label();
             button_Update = new System.Windows.Forms.Button();
             button_Satellites = new System.Windows.Forms.Button();
+            textBox_freq = new System.Windows.Forms.TextBox();
+            label_dop = new System.Windows.Forms.Label();
+            textBox_dopple = new System.Windows.Forms.TextBox();
+            button_Refresh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).BeginInit();
             SuspendLayout();
             // 
@@ -49,7 +53,7 @@ namespace SDRSharp.SDDE
             textBox_Longitude.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             textBox_Longitude.Location = new System.Drawing.Point(83, 35);
             textBox_Longitude.Name = "textBox_Longitude";
-            textBox_Longitude.Size = new System.Drawing.Size(210, 23);
+            textBox_Longitude.Size = new System.Drawing.Size(249, 23);
             textBox_Longitude.TabIndex = 0;
             textBox_Longitude.Text = "0";
             textBox_Longitude.TextChanged += textBox_Longitude_TextChanged;
@@ -60,7 +64,7 @@ namespace SDRSharp.SDDE
             textBox_Latitude.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             textBox_Latitude.Location = new System.Drawing.Point(83, 6);
             textBox_Latitude.Name = "textBox_Latitude";
-            textBox_Latitude.Size = new System.Drawing.Size(210, 23);
+            textBox_Latitude.Size = new System.Drawing.Size(249, 23);
             textBox_Latitude.TabIndex = 1;
             textBox_Latitude.Text = "0";
             textBox_Latitude.Leave += textBox_Latitude_Leave;
@@ -85,7 +89,7 @@ namespace SDRSharp.SDDE
             // 
             // button_TLE
             // 
-            button_TLE.Location = new System.Drawing.Point(8, 93);
+            button_TLE.Location = new System.Drawing.Point(89, 93);
             button_TLE.Name = "button_TLE";
             button_TLE.Size = new System.Drawing.Size(57, 23);
             button_TLE.TabIndex = 4;
@@ -95,9 +99,8 @@ namespace SDRSharp.SDDE
             // 
             // label_time
             // 
-            label_time.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             label_time.AutoSize = true;
-            label_time.Location = new System.Drawing.Point(245, 93);
+            label_time.Location = new System.Drawing.Point(233, 96);
             label_time.Name = "label_time";
             label_time.Size = new System.Drawing.Size(33, 17);
             label_time.TabIndex = 8;
@@ -110,15 +113,16 @@ namespace SDRSharp.SDDE
             dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 122);
             dataGridView_Satellitepass.Name = "dataGridView_Satellitepass";
             dataGridView_Satellitepass.RowTemplate.Height = 25;
-            dataGridView_Satellitepass.Size = new System.Drawing.Size(285, 320);
+            dataGridView_Satellitepass.Size = new System.Drawing.Size(324, 320);
             dataGridView_Satellitepass.TabIndex = 9;
+            dataGridView_Satellitepass.CellEnter += dataGridView_Satellitepass_CellEnter;
             // 
             // textBox_Degree
             // 
             textBox_Degree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             textBox_Degree.Location = new System.Drawing.Point(83, 64);
             textBox_Degree.Name = "textBox_Degree";
-            textBox_Degree.Size = new System.Drawing.Size(210, 23);
+            textBox_Degree.Size = new System.Drawing.Size(249, 23);
             textBox_Degree.TabIndex = 10;
             textBox_Degree.Text = "10";
             textBox_Degree.TextChanged += textBox_Degree_TextChanged;
@@ -135,7 +139,8 @@ namespace SDRSharp.SDDE
             // 
             // button_Update
             // 
-            button_Update.Location = new System.Drawing.Point(152, 93);
+            button_Update.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            button_Update.Location = new System.Drawing.Point(269, 448);
             button_Update.Name = "button_Update";
             button_Update.Size = new System.Drawing.Size(63, 23);
             button_Update.TabIndex = 12;
@@ -145,7 +150,7 @@ namespace SDRSharp.SDDE
             // 
             // button_Satellites
             // 
-            button_Satellites.Location = new System.Drawing.Point(71, 93);
+            button_Satellites.Location = new System.Drawing.Point(8, 93);
             button_Satellites.Name = "button_Satellites";
             button_Satellites.Size = new System.Drawing.Size(75, 23);
             button_Satellites.TabIndex = 13;
@@ -153,10 +158,51 @@ namespace SDRSharp.SDDE
             button_Satellites.UseVisualStyleBackColor = true;
             button_Satellites.Click += button_Satellites_Click;
             // 
+            // textBox_freq
+            // 
+            textBox_freq.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            textBox_freq.Location = new System.Drawing.Point(71, 448);
+            textBox_freq.Name = "textBox_freq";
+            textBox_freq.Size = new System.Drawing.Size(139, 23);
+            textBox_freq.TabIndex = 14;
+            textBox_freq.Text = "145.0000";
+            // 
+            // label_dop
+            // 
+            label_dop.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            label_dop.AutoSize = true;
+            label_dop.Location = new System.Drawing.Point(8, 480);
+            label_dop.Name = "label_dop";
+            label_dop.Size = new System.Drawing.Size(54, 17);
+            label_dop.TabIndex = 15;
+            label_dop.Text = "Dopple:";
+            // 
+            // textBox_dopple
+            // 
+            textBox_dopple.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            textBox_dopple.Location = new System.Drawing.Point(71, 477);
+            textBox_dopple.Name = "textBox_dopple";
+            textBox_dopple.Size = new System.Drawing.Size(139, 23);
+            textBox_dopple.TabIndex = 16;
+            // 
+            // button_Refresh
+            // 
+            button_Refresh.Location = new System.Drawing.Point(152, 93);
+            button_Refresh.Name = "button_Refresh";
+            button_Refresh.Size = new System.Drawing.Size(75, 23);
+            button_Refresh.TabIndex = 17;
+            button_Refresh.Text = "Refresh";
+            button_Refresh.UseVisualStyleBackColor = true;
+            button_Refresh.Click += button_Refresh_Click;
+            // 
             // ControlPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(button_Refresh);
+            Controls.Add(textBox_dopple);
+            Controls.Add(label_dop);
+            Controls.Add(textBox_freq);
             Controls.Add(button_Satellites);
             Controls.Add(button_Update);
             Controls.Add(label3);
@@ -169,7 +215,7 @@ namespace SDRSharp.SDDE
             Controls.Add(textBox_Latitude);
             Controls.Add(textBox_Longitude);
             Name = "ControlPanel";
-            Size = new System.Drawing.Size(296, 566);
+            Size = new System.Drawing.Size(335, 566);
             Load += ControlPanel_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).EndInit();
             ResumeLayout(false);
@@ -190,5 +236,9 @@ namespace SDRSharp.SDDE
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button_Update;
         private System.Windows.Forms.Button button_Satellites;
+        private System.Windows.Forms.TextBox textBox_freq;
+        private System.Windows.Forms.Label label_dop;
+        private System.Windows.Forms.TextBox textBox_dopple;
+        private System.Windows.Forms.Button button_Refresh;
     }
 }

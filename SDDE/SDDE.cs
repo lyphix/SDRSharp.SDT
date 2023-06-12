@@ -49,9 +49,7 @@ namespace SDRSharp.SDDE
             
         }
 
-
-
-
+        
     }
     public static class SatKey
     {
