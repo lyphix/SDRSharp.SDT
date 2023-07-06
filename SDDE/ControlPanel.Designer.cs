@@ -42,6 +42,7 @@ namespace SDRSharp.SDDE
             button_Update = new System.Windows.Forms.Button();
             button_Satellites = new System.Windows.Forms.Button();
             button_Refresh = new System.Windows.Forms.Button();
+            label_SatelliteName = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).BeginInit();
             SuspendLayout();
             // 
@@ -112,6 +113,7 @@ namespace SDRSharp.SDDE
             dataGridView_Satellitepass.RowTemplate.Height = 25;
             dataGridView_Satellitepass.Size = new System.Drawing.Size(324, 180);
             dataGridView_Satellitepass.TabIndex = 9;
+            dataGridView_Satellitepass.CellClick += dataGridView_Satellitepass_CellClick;
             dataGridView_Satellitepass.CellEnter += dataGridView_Satellitepass_CellEnter;
             // 
             // textBox_Degree
@@ -165,10 +167,21 @@ namespace SDRSharp.SDDE
             button_Refresh.UseVisualStyleBackColor = true;
             button_Refresh.Click += button_Refresh_Click;
             // 
+            // label_SatelliteName
+            // 
+            label_SatelliteName.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            label_SatelliteName.AutoSize = true;
+            label_SatelliteName.Location = new System.Drawing.Point(8, 305);
+            label_SatelliteName.Name = "label_SatelliteName";
+            label_SatelliteName.Size = new System.Drawing.Size(31, 17);
+            label_SatelliteName.TabIndex = 18;
+            label_SatelliteName.Text = "N/A";
+            // 
             // ControlPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(label_SatelliteName);
             Controls.Add(button_Refresh);
             Controls.Add(button_Satellites);
             Controls.Add(button_Update);
@@ -204,5 +217,6 @@ namespace SDRSharp.SDDE
         private System.Windows.Forms.Button button_Update;
         private System.Windows.Forms.Button button_Satellites;
         private System.Windows.Forms.Button button_Refresh;
+        private System.Windows.Forms.Label label_SatelliteName;
     }
 }

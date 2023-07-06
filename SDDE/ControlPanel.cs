@@ -185,7 +185,7 @@ namespace SDRSharp.SDDE
                     countdown = start - DateTime.UtcNow;
                     formattedCountdown = countdown.ToString(@"hh\:mm\:ss");
                 }
-                else if(end < DateTime.UtcNow && start < DateTime.UtcNow)
+                else if (end < DateTime.UtcNow && start < DateTime.UtcNow)
                 {
                     countdown = end - DateTime.UtcNow;
                     formattedCountdown = "* " + countdown.ToString(@"hh\:mm\:ss");
@@ -440,6 +440,19 @@ namespace SDRSharp.SDDE
                 }
                 allObservations.Sort((a, b) => a.VisibilityPeriod.Start.CompareTo(b.VisibilityPeriod.Start));
 
+            }
+        }
+
+        private void dataGridView_Satellitepass_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // 确保选中了有效的行
+            if (e.RowIndex >= 0)
+            {
+                // 获取第一列的值
+                var firstColumnValue = dataGridView_Satellitepass.Rows[e.RowIndex].Cells[0].Value.ToString();
+
+                // 将第一列的值赋给label_SatelliteName的Text
+                label_SatelliteName.Text = firstColumnValue;
             }
         }
     }
