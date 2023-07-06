@@ -41,9 +41,6 @@ namespace SDRSharp.SDDE
             label3 = new System.Windows.Forms.Label();
             button_Update = new System.Windows.Forms.Button();
             button_Satellites = new System.Windows.Forms.Button();
-            textBox_freq = new System.Windows.Forms.TextBox();
-            label_dop = new System.Windows.Forms.Label();
-            textBox_dopple = new System.Windows.Forms.TextBox();
             button_Refresh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).BeginInit();
             SuspendLayout();
@@ -113,7 +110,7 @@ namespace SDRSharp.SDDE
             dataGridView_Satellitepass.Location = new System.Drawing.Point(8, 122);
             dataGridView_Satellitepass.Name = "dataGridView_Satellitepass";
             dataGridView_Satellitepass.RowTemplate.Height = 25;
-            dataGridView_Satellitepass.Size = new System.Drawing.Size(324, 320);
+            dataGridView_Satellitepass.Size = new System.Drawing.Size(324, 180);
             dataGridView_Satellitepass.TabIndex = 9;
             dataGridView_Satellitepass.CellEnter += dataGridView_Satellitepass_CellEnter;
             // 
@@ -140,7 +137,7 @@ namespace SDRSharp.SDDE
             // button_Update
             // 
             button_Update.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            button_Update.Location = new System.Drawing.Point(269, 448);
+            button_Update.Location = new System.Drawing.Point(269, 540);
             button_Update.Name = "button_Update";
             button_Update.Size = new System.Drawing.Size(63, 23);
             button_Update.TabIndex = 12;
@@ -158,33 +155,6 @@ namespace SDRSharp.SDDE
             button_Satellites.UseVisualStyleBackColor = true;
             button_Satellites.Click += button_Satellites_Click;
             // 
-            // textBox_freq
-            // 
-            textBox_freq.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            textBox_freq.Location = new System.Drawing.Point(71, 448);
-            textBox_freq.Name = "textBox_freq";
-            textBox_freq.Size = new System.Drawing.Size(139, 23);
-            textBox_freq.TabIndex = 14;
-            textBox_freq.Text = "145.0000";
-            // 
-            // label_dop
-            // 
-            label_dop.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            label_dop.AutoSize = true;
-            label_dop.Location = new System.Drawing.Point(8, 480);
-            label_dop.Name = "label_dop";
-            label_dop.Size = new System.Drawing.Size(54, 17);
-            label_dop.TabIndex = 15;
-            label_dop.Text = "Dopple:";
-            // 
-            // textBox_dopple
-            // 
-            textBox_dopple.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            textBox_dopple.Location = new System.Drawing.Point(71, 477);
-            textBox_dopple.Name = "textBox_dopple";
-            textBox_dopple.Size = new System.Drawing.Size(139, 23);
-            textBox_dopple.TabIndex = 16;
-            // 
             // button_Refresh
             // 
             button_Refresh.Location = new System.Drawing.Point(152, 93);
@@ -200,9 +170,6 @@ namespace SDRSharp.SDDE
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(button_Refresh);
-            Controls.Add(textBox_dopple);
-            Controls.Add(label_dop);
-            Controls.Add(textBox_freq);
             Controls.Add(button_Satellites);
             Controls.Add(button_Update);
             Controls.Add(label3);
@@ -236,9 +203,6 @@ namespace SDRSharp.SDDE
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button_Update;
         private System.Windows.Forms.Button button_Satellites;
-        private System.Windows.Forms.TextBox textBox_freq;
-        private System.Windows.Forms.Label label_dop;
-        private System.Windows.Forms.TextBox textBox_dopple;
         private System.Windows.Forms.Button button_Refresh;
     }
 }

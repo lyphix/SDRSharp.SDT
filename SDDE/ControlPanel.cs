@@ -32,7 +32,7 @@ namespace SDRSharp.SDDE
         private List<SatelliteObservation> allObservations = new List<SatelliteObservation>();
         private ISharpControl _control;
         private Dictionary<string, Dictionary<int, Tle>> alltles = new();
-        public Dictionary<int,Satellite> satellites = new();
+        public Dictionary<int, Satellite> satellites = new();
 
         public static Dictionary<string, string> SatelliteSourcesMap
         {
@@ -145,7 +145,13 @@ namespace SDRSharp.SDDE
             LoadSettings();
             alltles = ReadAlltles();
 
-
+            string pathsatnogs = Path.Combine(Directory.GetCurrentDirectory(), $"{Satnogs}");
+            if (!File.Exists(pathsatnogs))
+            {
+                _ = FetchAndSaveToFile(SatnogsURL, pathsatnogs);
+            }
+            string json = File.ReadAllText(pathsatnogs);
+            SatnogsJson = JsonSerializer.Deserialize<List<SatelliteInformations>>(json);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -163,7 +169,6 @@ namespace SDRSharp.SDDE
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("SatelliteName");
             dataTable.Columns.Add("Countdown");
-            dataTable.Columns.Add("Doppler");
 
 
             foreach (var observation in allObservations)
@@ -187,7 +192,6 @@ namespace SDRSharp.SDDE
                 }
 
                 row["Countdown"] = formattedCountdown;
-                row["Doppler"] = observation.Doppler;
                 dataTable.Rows.Add(row);
             }
 
@@ -372,6 +376,7 @@ namespace SDRSharp.SDDE
                 // Create a ground station
                 var groundStation = new GroundStation(location);
                 // 保存选择的卫星到satellites
+                satellites.Clear();
                 foreach (int key in keys)
                 {
                     foreach (Dictionary<int, Tle> tles in alltles.Values)
@@ -384,35 +389,48 @@ namespace SDRSharp.SDDE
                             {
                                 satellites.Add(key, sat);
                             }
-                            // Observe the satellite
-                            //double degree = double.Parse(textBox_Degree.Text);
 
-                            //var observations = groundStation.Observe(
-                            //    sat,
-                            //    DateTime.UtcNow - TimeSpan.FromMinutes(10),
-                            //    DateTime.UtcNow + TimeSpan.FromHours(24),
-                            //    TimeSpan.FromSeconds(10),
-                            //    minElevation: Angle.FromDegrees(degree),
-                            //    clipToStartTime: true
-                            //) ;
-                            //var inputFrequency = double.Parse(textBox_freq.Text);
-                            //var topocentricObservation = groundStation.Observe(sat, DateTime.UtcNow);
-                            //var DopplerShift = topocentricObservation.GetDopplerShift(inputFrequency) + inputFrequency;
-
-
-                            //foreach (var observation in observations)
-                            //{
-
-                            //    var satelliteObservation = new SatelliteObservation
-                            //    {
-                            //        SatelliteName = tle.Name,
-                            //        Doppler = DopplerShift,
-                            //        VisibilityPeriod = observation
-                            //    };
-                            //    allObservations.Add(satelliteObservation);
-                            //}
                         }
                     }
+                }
+
+
+
+                //读取选择的卫星 预测过境
+                foreach (KeyValuePair<int, Satellite> entry in satellites)
+                {
+                    int satelliteId = entry.Key;
+                    Satellite sat = entry.Value;
+
+                    //Observe the satellite
+                    double degree = double.Parse(textBox_Degree.Text);
+
+                    var observations = groundStation.Observe(
+                        sat,
+                        DateTime.UtcNow - TimeSpan.FromMinutes(10),
+                        DateTime.UtcNow + TimeSpan.FromHours(24),
+                        TimeSpan.FromSeconds(10),
+                        minElevation: Angle.FromDegrees(degree),
+                        clipToStartTime: true
+                    );
+                    var inputFrequency = double.Parse("145");
+                    var topocentricObservation = groundStation.Observe(sat, DateTime.UtcNow);
+                    var DopplerShift = topocentricObservation.GetDopplerShift(inputFrequency) + inputFrequency;
+
+
+                    foreach (var observation in observations)
+                    {
+
+                        var satelliteObservation = new SatelliteObservation
+                        {
+                            SatelliteName = sat.Name,
+                            Doppler = DopplerShift,
+                            VisibilityPeriod = observation
+                        };
+                        allObservations.Add(satelliteObservation);
+                    }
+
+
                 }
                 allObservations.Sort((a, b) => a.VisibilityPeriod.Start.CompareTo(b.VisibilityPeriod.Start));
 
