@@ -185,10 +185,16 @@ namespace SDRSharp.SDDE
                     countdown = start - DateTime.UtcNow;
                     formattedCountdown = countdown.ToString(@"hh\:mm\:ss");
                 }
-                else
+                else if(end < DateTime.UtcNow && start < DateTime.UtcNow)
                 {
                     countdown = end - DateTime.UtcNow;
                     formattedCountdown = "* " + countdown.ToString(@"hh\:mm\:ss");
+                    continue;
+                }
+                else
+                {
+                    countdown = end - DateTime.UtcNow;
+                    formattedCountdown = "P " + countdown.ToString(@"hh\:mm\:ss");
                 }
 
                 row["Countdown"] = formattedCountdown;
