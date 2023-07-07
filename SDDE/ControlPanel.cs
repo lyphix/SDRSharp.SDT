@@ -33,6 +33,7 @@ namespace SDRSharp.SDDE
         private ISharpControl _control;
         private Dictionary<string, Dictionary<int, Tle>> alltles = new();
         public Dictionary<int, Satellite> satellites = new();
+        public Satellite SelectSatellite = null;
 
         public static Dictionary<string, string> SatelliteSourcesMap
         {
@@ -108,6 +109,8 @@ namespace SDRSharp.SDDE
             _control = control;
             InitializeComponent();
         }
+        bool DopplerisTracking = false;
+
 
         private void textBox_Longitude_Leave(object sender, System.EventArgs e)
         {
@@ -152,6 +155,15 @@ namespace SDRSharp.SDDE
             }
             string json = File.ReadAllText(pathsatnogs);
             SatnogsJson = JsonSerializer.Deserialize<List<SatelliteInformations>>(json);
+            //初始化卫星频率表
+            listView_SatelliteF.CheckBoxes = true;
+            listView_SatelliteF.View = View.Details;
+
+            // 添加需要的列
+            listView_SatelliteF.Columns.Add("Description", listView_SatelliteF.Width * 40 / 100, HorizontalAlignment.Center);
+            listView_SatelliteF.Columns.Add("Uplink", listView_SatelliteF.Width * 20 / 100, HorizontalAlignment.Center);
+            listView_SatelliteF.Columns.Add("Mode", listView_SatelliteF.Width * 20 / 100, HorizontalAlignment.Center);
+            listView_SatelliteF.Columns.Add("Downlink", listView_SatelliteF.Width * 20 / 100, HorizontalAlignment.Center);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -164,18 +176,84 @@ namespace SDRSharp.SDDE
             label_time.Text = DateTime.Now.ToString("HH:mm:ss");
             SaveSettings();
 
+            //读取选择的卫星 预测过境
+            allObservations.Clear();
+
+            // 读取经纬度
+            double latitude = double.Parse(textBox_Latitude.Text);
+            double longitude = double.Parse(textBox_Longitude.Text);
+            // 设置地面位置
+            var location = new GeodeticCoordinate(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
+            // 创建地面站
+            var groundStation = new GroundStation(location);
+            // 最小角度
+            double degree = double.Parse(textBox_Degree.Text);
+
+            foreach (KeyValuePair<int, Satellite> entry in satellites)
+            {
+                int satelliteId = entry.Key;
+                Satellite sat = entry.Value;
+
+
+                //预测卫星过境 从当前时间-10分钟到未来24小时
+                var observations = groundStation.Observe(
+                    sat,
+                    DateTime.UtcNow - TimeSpan.FromMinutes(10),
+                    DateTime.UtcNow + TimeSpan.FromHours(24),
+                    TimeSpan.FromSeconds(10),
+                    minElevation: Angle.FromDegrees(degree),
+                    clipToStartTime: true
+                );
+
+                //保存观测结果
+                foreach (var observation in observations)
+                {
+
+                    var satelliteObservation = new SatelliteObservation
+                    {
+                        Satellite = sat,
+                        SatelliteId = satelliteId,
+                        VisibilityPeriod = observation
+                    };
+                    allObservations.Add(satelliteObservation);
+                }
+
+
+
+            }
+            //按时间排序
+            allObservations.Sort((a, b) => a.VisibilityPeriod.Start.CompareTo(b.VisibilityPeriod.Start));
+
+            //多普勒
+            if (SelectSatellite != null)
+            {
+                if (double.TryParse(textBoxFreq.Text, out double inputFrequency))
+                {
+                    var topocentricObservation = groundStation.Observe(SelectSatellite, DateTime.UtcNow);
+                    var DopplerShift = topocentricObservation.GetDopplerShift(inputFrequency) + inputFrequency;
+                    long DopplerFrq = (long)(DopplerShift * 1000000);
+                    textBoxDopl.Text = DopplerShift.ToString();
+                    if (DopplerisTracking)
+                    {
+                        _control.SetFrequency(DopplerFrq,true);
+                    }
+                }
+
+            }
 
 
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("SatelliteName");
+            dataTable.Columns.Add("NORAD ID");
             dataTable.Columns.Add("Countdown");
 
 
             foreach (var observation in allObservations)
             {
                 DataRow row = dataTable.NewRow();
-                row["SatelliteName"] = observation.SatelliteName;
+                row["SatelliteName"] = observation.Satellite.Name;
 
+                //计算倒计时
                 DateTime start = observation.VisibilityPeriod.Start;
                 DateTime end = observation.VisibilityPeriod.End;
                 TimeSpan countdown;
@@ -196,7 +274,7 @@ namespace SDRSharp.SDDE
                     countdown = end - DateTime.UtcNow;
                     formattedCountdown = "P " + countdown.ToString(@"hh\:mm\:ss");
                 }
-
+                row["NORAD ID"] = observation.SatelliteId;
                 row["Countdown"] = formattedCountdown;
                 dataTable.Rows.Add(row);
             }
@@ -271,8 +349,8 @@ namespace SDRSharp.SDDE
 
         public class SatelliteObservation
         {
-            public string SatelliteName { get; set; }
-            public double Doppler { get; set; }
+            public Satellite Satellite { get; set; }
+            public int SatelliteId { get; set; }
             public SatelliteVisibilityPeriod VisibilityPeriod { get; set; }
         }
 
@@ -368,19 +446,9 @@ namespace SDRSharp.SDDE
         {
             alltles = ReadAlltles();
             List<int> keys = SatKey.CheckedTlesKey;
-            allObservations.Clear();
 
             if (keys != null && alltles != null)
             {
-                // Get latitude and longitude from text boxes
-                double latitude = double.Parse(textBox_Latitude.Text);
-                double longitude = double.Parse(textBox_Longitude.Text);
-
-                // Set up our ground station location
-                var location = new GeodeticCoordinate(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
-
-                // Create a ground station
-                var groundStation = new GroundStation(location);
                 // 保存选择的卫星到satellites
                 satellites.Clear();
                 foreach (int key in keys)
@@ -399,47 +467,6 @@ namespace SDRSharp.SDDE
                         }
                     }
                 }
-
-
-
-                //读取选择的卫星 预测过境
-                foreach (KeyValuePair<int, Satellite> entry in satellites)
-                {
-                    int satelliteId = entry.Key;
-                    Satellite sat = entry.Value;
-
-                    //Observe the satellite
-                    double degree = double.Parse(textBox_Degree.Text);
-
-                    var observations = groundStation.Observe(
-                        sat,
-                        DateTime.UtcNow - TimeSpan.FromMinutes(10),
-                        DateTime.UtcNow + TimeSpan.FromHours(24),
-                        TimeSpan.FromSeconds(10),
-                        minElevation: Angle.FromDegrees(degree),
-                        clipToStartTime: true
-                    );
-                    var inputFrequency = double.Parse("145");
-                    var topocentricObservation = groundStation.Observe(sat, DateTime.UtcNow);
-                    var DopplerShift = topocentricObservation.GetDopplerShift(inputFrequency) + inputFrequency;
-
-
-                    foreach (var observation in observations)
-                    {
-
-                        var satelliteObservation = new SatelliteObservation
-                        {
-                            SatelliteName = sat.Name,
-                            Doppler = DopplerShift,
-                            VisibilityPeriod = observation
-                        };
-                        allObservations.Add(satelliteObservation);
-                    }
-
-
-                }
-                allObservations.Sort((a, b) => a.VisibilityPeriod.Start.CompareTo(b.VisibilityPeriod.Start));
-
             }
         }
 
@@ -448,12 +475,59 @@ namespace SDRSharp.SDDE
             // 确保选中了有效的行
             if (e.RowIndex >= 0)
             {
-                // 获取第一列的值
+                // 获取名字
                 var firstColumnValue = dataGridView_Satellitepass.Rows[e.RowIndex].Cells[0].Value.ToString();
 
-                // 将第一列的值赋给label_SatelliteName的Text
-                label_SatelliteName.Text = firstColumnValue;
+                var id = dataGridView_Satellitepass.Rows[e.RowIndex].Cells[1].Value.ToString();
+
+                // 将名字赋给label_SatelliteName的Text
+                label_SatelliteName.Text = firstColumnValue + " " + id;
+                SelectSatellite = satellites[int.Parse(id)];
+
+                List<SatelliteInformations> targetSatellites = SatnogsJson.Where(satellite => satellite.norad_cat_id.ToString() == id).ToList();
+
+                listView_SatelliteF.Items.Clear();
+                foreach (SatelliteInformations targetSatellite in targetSatellites)
+                {
+                    // 使用ListViewItem来创建新的行，并设置每一列的值
+                    ListViewItem listItem = new ListViewItem(targetSatellite.description);
+                    listItem.SubItems.Add((targetSatellite.uplink_low / 1000000.0).ToString());
+                    listItem.SubItems.Add(targetSatellite.mode);
+                    listItem.SubItems.Add((targetSatellite.downlink_low / 1000000.0).ToString());
+
+                    // 将新的行添加到listView_SatelliteF中
+                    listView_SatelliteF.Items.Add(listItem);
+                }
             }
+        }
+
+        private void listView_SatelliteF_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Checked)
+            {
+                // 先取消选中其他所有项
+                foreach (ListViewItem item in listView_SatelliteF.Items)
+                {
+                    if (item.Index != e.Index)
+                    {
+                        item.Checked = false;
+                    }
+                }
+
+                // 获取当前被选中项的 "Downlink Low" 的值
+                string downlinkLow = listView_SatelliteF.Items[e.Index].SubItems[3].Text;
+                textBoxFreq.Text = downlinkLow;
+                // 在这里你可以使用 downlinkLow 做其他操作
+            }
+        }
+
+        private void button_Doppler_Click(object sender, EventArgs e)
+        {
+            // 切换变量值
+            DopplerisTracking = !DopplerisTracking;
+
+            // 更新按钮文本
+            button_Doppler.Text = DopplerisTracking ? "Stop" : "Start";
         }
     }
 
