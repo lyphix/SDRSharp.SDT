@@ -234,7 +234,7 @@ namespace SDRSharp.SDDE
                     textBoxDopl.Text = DopplerShift.ToString();
                     if (DopplerisTracking)
                     {
-                        _control.SetFrequency(DopplerFrq,true);
+                        _control.SetFrequency(DopplerFrq, true);
                     }
                 }
 
@@ -379,14 +379,14 @@ namespace SDRSharp.SDDE
                     MessageBox.Show("Fail");
                 }
             });
-            
+
 
 
         }
 
         private void button_Satellites_Click(object sender, EventArgs e)
         {
-            if(alltles != null)
+            if (alltles != null)
             {
                 SatellitesForm satellitesForm = new SatellitesForm(alltles);
                 satellitesForm.Show();
