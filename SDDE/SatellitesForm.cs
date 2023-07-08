@@ -27,12 +27,13 @@ namespace SDRSharp.SDDE
         private void comboBox_SatellitesType_DropDown(object sender, EventArgs e)
         {
             comboBox_SatellitesType.Items.Clear();
-
             foreach (string filePath in _alltles.Keys)
             {
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
                 comboBox_SatellitesType.Items.Add(fileName);
             }
+            
+
 
         }
 
@@ -70,6 +71,7 @@ namespace SDRSharp.SDDE
 
         private void SatellitesForm_Load(object sender, EventArgs e)
         {
+
             comboBox_SatellitesType.Items.Clear();
             foreach (string filePath in _alltles.Keys)
             {
@@ -78,6 +80,7 @@ namespace SDRSharp.SDDE
             }
             //回头改成保存值
             comboBox_SatellitesType.SelectedIndex = 0;
+
         }
 
         private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)

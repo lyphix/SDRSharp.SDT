@@ -67,7 +67,7 @@ namespace SDRSharp.SDDE
         }
         public static string Satnogs = "satnogs.json";
         public static string SatnogsURL = "https://db.satnogs.org/api/transmitters/?format=json";
-
+        public string pluginpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public class SatelliteInformations
         {
             public string uuid { get; set; }
@@ -132,7 +132,7 @@ namespace SDRSharp.SDDE
 
         private void button_TLE_Click(object sender, EventArgs e)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "TLE");
+            string path = Path.Combine(pluginpath, "TLE");
             System.Diagnostics.Process.Start("explorer.exe", path);
         }
 
@@ -148,13 +148,12 @@ namespace SDRSharp.SDDE
             LoadSettings();
             alltles = ReadAlltles();
 
-            string pathsatnogs = Path.Combine(Directory.GetCurrentDirectory(), $"{Satnogs}");
-            if (!File.Exists(pathsatnogs))
+            string pathsatnogs = Path.Combine(pluginpath, $"{Satnogs}");
+            if (File.Exists(pathsatnogs))
             {
-                _ = FetchAndSaveToFile(SatnogsURL, pathsatnogs);
+                string json = File.ReadAllText(pathsatnogs);
+                SatnogsJson = JsonSerializer.Deserialize<List<SatelliteInformations>>(json);
             }
-            string json = File.ReadAllText(pathsatnogs);
-            SatnogsJson = JsonSerializer.Deserialize<List<SatelliteInformations>>(json);
             //初始化卫星频率表
             listView_SatelliteF.CheckBoxes = true;
             listView_SatelliteF.View = View.Details;
@@ -359,25 +358,46 @@ namespace SDRSharp.SDDE
             //下载TLE
             foreach (var pair in SatelliteSourcesMap)
             {
-                string TLEPath = Path.Combine(Directory.GetCurrentDirectory(), "TLE");
+                string TLEPath = Path.Combine(pluginpath, "TLE");
                 string path = Path.Combine(TLEPath, $"{pair.Key}.txt");
                 // 创建文件所在的目录，如果目录已存在则此方法不会执行任何操作
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 _ = FetchAndSaveToFile(pair.Value, path);
             }
             //下载卫星数据
-            string pathsatnogs = Path.Combine(Directory.GetCurrentDirectory(), $"{Satnogs}");
-            _ = FetchAndSaveToFile(SatnogsURL, pathsatnogs);
-            string json = File.ReadAllText(pathsatnogs);
-            SatnogsJson = JsonSerializer.Deserialize<List<SatelliteInformations>>(json);
+            string pathsatnogs = Path.Combine(pluginpath, $"{Satnogs}");
+            FetchAndSaveToFile(SatnogsURL, pathsatnogs).ContinueWith(t =>
+            {
+                if (t.Result == 1)
+                {
+                    string json = File.ReadAllText(pathsatnogs);
+                    SatnogsJson = JsonSerializer.Deserialize<List<SatelliteInformations>>(json);
+                    MessageBox.Show("Success");
+                }
+                else
+                {
+                    MessageBox.Show("Fail");
+                }
+            });
+            
+
+
         }
 
         private void button_Satellites_Click(object sender, EventArgs e)
         {
-            SatellitesForm satellitesForm = new SatellitesForm(alltles);
-            satellitesForm.Show();
-            satellitesForm.FormClosing += SatellitesForm_FormClosing;
-            button_Satellites.Enabled = false;
+            if(alltles != null)
+            {
+                SatellitesForm satellitesForm = new SatellitesForm(alltles);
+                satellitesForm.Show();
+                satellitesForm.FormClosing += SatellitesForm_FormClosing;
+                button_Satellites.Enabled = false;
+            }
+            else
+            {
+                MessageBox.Show("Can't find TLE Files!");
+            }
+
         }
 
         private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -386,7 +406,8 @@ namespace SDRSharp.SDDE
         }
         private Dictionary<string, Dictionary<int, Tle>> ReadAlltles()
         {
-            string directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TLE");
+            //Path.Combine(Directory.GetCurrentDirectory(), "TLE");
+            string directoryPath = Path.Combine(pluginpath, "TLE");
             Dictionary<string, Dictionary<int, Tle>> alltles = new();
             if (Directory.Exists(directoryPath))
             {
