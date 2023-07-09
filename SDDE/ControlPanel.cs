@@ -346,10 +346,6 @@ namespace SDRSharp.SDDE
                     }
                 });
             }
-            else if (dialogResult == DialogResult.No)
-            {
-                // 用户点击了 'No'
-            }
         }
 
         private void button_Satellites_Click(object sender, EventArgs e)

@@ -78,9 +78,6 @@ namespace SDRSharp.SDDE
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
                 comboBox_SatellitesType.Items.Add(fileName);
             }
-            //回头改成保存值
-            comboBox_SatellitesType.SelectedIndex = 0;
-
         }
 
         private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)
