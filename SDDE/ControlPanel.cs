@@ -317,32 +317,39 @@ namespace SDRSharp.SDDE
 
         private void button_Update_Click(object sender, EventArgs e)
         {
-            //下载TLE
-            foreach (var pair in SatelliteSourcesMap)
+            DialogResult dialogResult = MessageBox.Show("Update TLE & Satellites data from Web?", "Update", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
             {
-                string TLEPath = Path.Combine(pluginpath, "TLE");
-                string path = Path.Combine(TLEPath, $"{pair.Key}.txt");
-                // 创建文件所在的目录，如果目录已存在则此方法不会执行任何操作
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                _ = FetchAndSaveToFile(pair.Value, path);
+                //下载TLE
+                foreach (var pair in SatelliteSourcesMap)
+                {
+                    string TLEPath = Path.Combine(pluginpath, "TLE");
+                    string path = Path.Combine(TLEPath, $"{pair.Key}.txt");
+                    // 创建文件所在的目录，如果目录已存在则此方法不会执行任何操作
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+                    _ = FetchAndSaveToFile(pair.Value, path);
+                }
+                //下载卫星数据
+                string pathsatnogs = Path.Combine(pluginpath, $"{Satnogs}");
+
+                FetchAndSaveToFile(SatnogsURL, pathsatnogs).ContinueWith(t =>
+                {
+                    if (t.Result == 1)
+                    {
+                        string json = File.ReadAllText(pathsatnogs);
+                        SatnogsJson = JsonSerializer.Deserialize<List<SatelliteInformations>>(json);
+                        MessageBox.Show("Success");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Fail");
+                    }
+                });
             }
-            //下载卫星数据
-            string pathsatnogs = Path.Combine(pluginpath, $"{Satnogs}");
-
-            FetchAndSaveToFile(SatnogsURL, pathsatnogs).ContinueWith(t =>
+            else if (dialogResult == DialogResult.No)
             {
-                if (t.Result == 1)
-                {
-                    string json = File.ReadAllText(pathsatnogs);
-                    SatnogsJson = JsonSerializer.Deserialize<List<SatelliteInformations>>(json);
-                    MessageBox.Show("Success");
-                }
-                else
-                {
-                    MessageBox.Show("Fail");
-                }
-            });
-
+                // 用户点击了 'No'
+            }
         }
 
         private void button_Satellites_Click(object sender, EventArgs e)
