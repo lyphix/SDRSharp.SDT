@@ -111,7 +111,7 @@ namespace SDRSharp.SDDE
         {
             _control = control;
             InitializeComponent();
-            //typeof(ListView).InvokeMember("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty, null, listView_Satellitepass, new object[] { true });
+            typeof(ListView).InvokeMember("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty, null, listView_Satellitepass, new object[] { true });
         }
 
         public class SatelliteObservation
@@ -236,9 +236,7 @@ namespace SDRSharp.SDDE
                     }
                 }
             }
-
             UpdateCountdowns();
-
         }
 
         private void UpdateCountdowns()
