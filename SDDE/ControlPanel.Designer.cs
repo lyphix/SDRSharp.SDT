@@ -36,7 +36,6 @@ namespace SDRSharp.SDDE
             label2 = new System.Windows.Forms.Label();
             button_TLE = new System.Windows.Forms.Button();
             label_time = new System.Windows.Forms.Label();
-            dataGridView_Satellitepass = new System.Windows.Forms.DataGridView();
             textBox_Degree = new System.Windows.Forms.TextBox();
             label3 = new System.Windows.Forms.Label();
             button_Update = new System.Windows.Forms.Button();
@@ -44,13 +43,13 @@ namespace SDRSharp.SDDE
             button_Refresh = new System.Windows.Forms.Button();
             label_SatelliteName = new System.Windows.Forms.Label();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
+            listView_Satellitepass = new System.Windows.Forms.ListView();
             listView_SatelliteF = new System.Windows.Forms.ListView();
             textBoxFreq = new System.Windows.Forms.TextBox();
             textBoxDopl = new System.Windows.Forms.TextBox();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
             button_Doppler = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -65,7 +64,6 @@ namespace SDRSharp.SDDE
             textBox_Longitude.Size = new System.Drawing.Size(291, 23);
             textBox_Longitude.TabIndex = 0;
             textBox_Longitude.Text = "0";
-            textBox_Longitude.TextChanged += textBox_Longitude_TextChanged;
             textBox_Longitude.Leave += textBox_Longitude_Leave;
             // 
             // textBox_Latitude
@@ -115,18 +113,6 @@ namespace SDRSharp.SDDE
             label_time.TabIndex = 8;
             label_time.Text = "00:00:00";
             // 
-            // dataGridView_Satellitepass
-            // 
-            dataGridView_Satellitepass.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView_Satellitepass.Dock = System.Windows.Forms.DockStyle.Fill;
-            dataGridView_Satellitepass.Location = new System.Drawing.Point(0, 0);
-            dataGridView_Satellitepass.Name = "dataGridView_Satellitepass";
-            dataGridView_Satellitepass.RowTemplate.Height = 25;
-            dataGridView_Satellitepass.Size = new System.Drawing.Size(371, 199);
-            dataGridView_Satellitepass.TabIndex = 9;
-            dataGridView_Satellitepass.CellClick += dataGridView_Satellitepass_CellClick;
-            dataGridView_Satellitepass.CellEnter += dataGridView_Satellitepass_CellEnter;
-            // 
             // textBox_Degree
             // 
             textBox_Degree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
@@ -135,7 +121,7 @@ namespace SDRSharp.SDDE
             textBox_Degree.Size = new System.Drawing.Size(291, 23);
             textBox_Degree.TabIndex = 10;
             textBox_Degree.Text = "10";
-            textBox_Degree.TextChanged += textBox_Degree_TextChanged;
+            textBox_Degree.Leave += textBox_Degree_Leave;
             // 
             // label3
             // 
@@ -196,7 +182,7 @@ namespace SDRSharp.SDDE
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(dataGridView_Satellitepass);
+            splitContainer1.Panel1.Controls.Add(listView_Satellitepass);
             // 
             // splitContainer1.Panel2
             // 
@@ -204,6 +190,16 @@ namespace SDRSharp.SDDE
             splitContainer1.Size = new System.Drawing.Size(371, 418);
             splitContainer1.SplitterDistance = 199;
             splitContainer1.TabIndex = 20;
+            // 
+            // listView_Satellitepass
+            // 
+            listView_Satellitepass.Dock = System.Windows.Forms.DockStyle.Fill;
+            listView_Satellitepass.Location = new System.Drawing.Point(0, 0);
+            listView_Satellitepass.Name = "listView_Satellitepass";
+            listView_Satellitepass.Size = new System.Drawing.Size(371, 199);
+            listView_Satellitepass.TabIndex = 10;
+            listView_Satellitepass.UseCompatibleStateImageBehavior = false;
+            listView_Satellitepass.ItemCheck += listView_Satellitepass_ItemCheck;
             // 
             // listView_SatelliteF
             // 
@@ -288,7 +284,6 @@ namespace SDRSharp.SDDE
             Name = "ControlPanel";
             Size = new System.Drawing.Size(377, 702);
             Load += ControlPanel_Load;
-            ((System.ComponentModel.ISupportInitialize)dataGridView_Satellitepass).EndInit();
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
@@ -306,7 +301,6 @@ namespace SDRSharp.SDDE
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button_TLE;
         private System.Windows.Forms.Label label_time;
-        private System.Windows.Forms.DataGridView dataGridView_Satellitepass;
         private System.Windows.Forms.TextBox textBox_Degree;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button_Update;
@@ -320,5 +314,6 @@ namespace SDRSharp.SDDE
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button_Doppler;
+        private System.Windows.Forms.ListView listView_Satellitepass;
     }
 }
