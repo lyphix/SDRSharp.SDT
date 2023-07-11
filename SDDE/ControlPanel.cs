@@ -32,7 +32,7 @@ namespace SDRSharp.SDDE
         //插件dll路径
         public string pluginpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private Dictionary<string, Dictionary<int, Tle>> alltles = new();
-        private List<SatelliteObservation> allObservations = new List<SatelliteObservation>();
+        private List<SatelliteVisibilityPeriod> allObservations = new ();
         public Dictionary<int, Satellite> selected_satellites = new();
         public Satellite SelectSatellite = null;
         //TLE网址
@@ -110,7 +110,6 @@ namespace SDRSharp.SDDE
             public static Settings GlobalSettings = LoadSettings();
 
         }
-
         //卫星Json文件格式
         public class SatelliteInformations
         {
@@ -146,23 +145,17 @@ namespace SDRSharp.SDDE
         {
             public List<string> urls { get; set; }
         }
-
         public List<SatelliteInformations> SatnogsJson = new();
-
         public class SatelliteObservation
         {
             public Satellite Satellite { get; set; }
             public int SatelliteId { get; set; }
             public SatelliteVisibilityPeriod VisibilityPeriod { get; set; }
         }
-
-
         //追踪开关
         bool DopplerisTracking = false;
-
         //选取的卫星列表
         private List<ListViewItem> listViewItems;
-
         public ControlPanel(ISharpControl control)
         {
             _control = control;
@@ -197,8 +190,10 @@ namespace SDRSharp.SDDE
             listView_Satellitepass.CheckBoxes = true;
             listView_Satellitepass.View = View.Details;
             listView_Satellitepass.Columns.Add("Satellite Name", listView_Satellitepass.Width * 40 / 100, HorizontalAlignment.Center);
-            listView_Satellitepass.Columns.Add("ID", listView_Satellitepass.Width * 30 / 100, HorizontalAlignment.Center);
-            listView_Satellitepass.Columns.Add("Time", listView_Satellitepass.Width * 30 / 100, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("ID", listView_Satellitepass.Width * 15 / 100, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("Time", listView_Satellitepass.Width * 15 / 100, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("Elevation", listView_Satellitepass.Width * 15 / 100, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("Hight", listView_Satellitepass.Width * 15 / 100, HorizontalAlignment.Center);
 
             //初始化卫星频率表
             listView_SatelliteF.CheckBoxes = true;
@@ -210,7 +205,6 @@ namespace SDRSharp.SDDE
 
             button_Refresh_Click(sender, e);
         }
-
         //经纬度 角度 输入
         private void textBox_Longitude_Leave(object sender, System.EventArgs e)
         {
@@ -223,7 +217,6 @@ namespace SDRSharp.SDDE
             SettingsManager.GlobalSettings.longitude = longitude;
             button_Refresh_Click(sender, e);
         }
-
         private void textBox_Latitude_Leave(object sender, System.EventArgs e)
         {
             if (!double.TryParse(textBox_Latitude.Text, out double latitude) || latitude < -90 || latitude > 90)
@@ -235,7 +228,6 @@ namespace SDRSharp.SDDE
             SettingsManager.GlobalSettings.latitude = latitude;
             button_Refresh_Click(sender, e);
         }
-
         private void textBox_Degree_Leave(object sender, EventArgs e)
         {
             if (!double.TryParse(textBox_Degree.Text, out double degree) || degree < 0 || degree > 90)
@@ -247,82 +239,12 @@ namespace SDRSharp.SDDE
             SettingsManager.GlobalSettings.degree = degree;
             button_Refresh_Click(sender, e);
         }
-
         //打开TLE目录
         private void button_TLE_Click(object sender, EventArgs e)
         {
             string path = Path.Combine(pluginpath, "TLE");
             System.Diagnostics.Process.Start("explorer.exe", path);
         }
-
-        //定时器
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            //保存
-            SettingsManager.SaveSettings(SettingsManager.GlobalSettings);
-            // 更新 Label 的文本为当前时间
-            label_time.Text = DateTime.Now.ToString("HH:mm:ss");
-
-            //计算多普勒
-            var location = new GeodeticCoordinate(Angle.FromDegrees(SettingsManager.GlobalSettings.latitude), Angle.FromDegrees(SettingsManager.GlobalSettings.longitude), 0);
-            // 创建地面站
-            var groundStation = new GroundStation(location);
-            //多普勒
-            if (SelectSatellite != null)
-            {
-                if (double.TryParse(textBoxFreq.Text, out double inputFrequency))
-                {
-                    var topocentricObservation = groundStation.Observe(SelectSatellite, DateTime.UtcNow);
-                    var DopplerShift = topocentricObservation.GetDopplerShift(inputFrequency) + inputFrequency;
-                    long DopplerFrq = (long)(DopplerShift * 1000000);
-                    textBoxDopl.Text = DopplerShift.ToString();
-                    if (DopplerisTracking)
-                    {
-                        _control.SetFrequency(DopplerFrq, true);
-                    }
-                }
-            }
-            UpdateCountdowns();
-        }
-
-        private void UpdateCountdowns()
-        {
-            // 如果 listViewItems 未初始化，直接返回
-            if (listViewItems == null)
-            {
-                return;
-            }
-
-            for (int i = 0; i < listViewItems.Count; i++)
-            {
-                var observation = allObservations[i];
-                var listItem = listViewItems[i];
-
-                // 计算倒计时
-                DateTime start = observation.VisibilityPeriod.Start;
-                DateTime end = observation.VisibilityPeriod.End;
-                TimeSpan countdown;
-                string formattedCountdown;
-                if (end > DateTime.UtcNow && start > DateTime.UtcNow)
-                {
-                    countdown = start - DateTime.UtcNow;
-                    formattedCountdown = countdown.ToString(@"hh\:mm\:ss");
-                }
-                else if (end < DateTime.UtcNow && start < DateTime.UtcNow)
-                {
-                    continue;
-                }
-                else
-                {
-                    countdown = end - DateTime.UtcNow;
-                    formattedCountdown = "P " + countdown.ToString(@"hh\:mm\:ss");
-                }
-
-                // 更新倒计时
-                listItem.SubItems[2].Text = formattedCountdown;
-            }
-        }
-
         private void button_Update_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Update TLE & Satellites data from Web?", "Update", MessageBoxButtons.YesNo);
@@ -355,7 +277,6 @@ namespace SDRSharp.SDDE
                 });
             }
         }
-
         private void button_Satellites_Click(object sender, EventArgs e)
         {
             alltles = ReadAlltles(pluginpath);
@@ -368,64 +289,10 @@ namespace SDRSharp.SDDE
             }
             else
             {
-                MessageBox.Show("Can't find TLE Files!");
+                MessageBox.Show("Can't find TLE Files! Please Update!");
             }
 
         }
-
-        private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            button_Satellites.Enabled = true;
-            button_Refresh_Click(sender, e);
-        }
-        private Dictionary<string, Dictionary<int, Tle>> ReadAlltles(string path)
-        {
-            //合并路径
-            string directoryPath = Path.Combine(path, "TLE");
-            Dictionary<string, Dictionary<int, Tle>> alltles = new();
-            //读取全部txt
-            if (Directory.Exists(directoryPath))
-            {
-                string[] txtFiles = Directory.GetFiles(directoryPath, "*.txt");
-                if (txtFiles.Length == 0)
-                {
-                    return null;
-                }
-                foreach (string txtFile in txtFiles)
-                {
-                    //把所有TLE都存到alltles
-                    string filePath = Path.Combine(directoryPath, txtFile);
-                    LocalTleProvider provider = new LocalTleProvider(true, filePath);
-                    Dictionary<int, Tle> tles = provider.GetTles();
-                    alltles.Add(filePath, tles);
-                }
-                return alltles;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        static async Task<int> FetchAndSaveToFile(string url, string path)
-        {
-            HttpClient client = new HttpClient();
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                File.WriteAllText(path, responseBody);
-
-                return 1;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
         private void button_Refresh_Click(object sender, EventArgs e)
         {
             alltles = ReadAlltles(pluginpath);
@@ -475,20 +342,11 @@ namespace SDRSharp.SDDE
                     );
 
                     //保存观测结果
-                    foreach (var observation in observations)
-                    {
-
-                        var satelliteObservation = new SatelliteObservation
-                        {
-                            Satellite = sat,
-                            SatelliteId = satelliteId,
-                            VisibilityPeriod = observation
-                        };
-                        allObservations.Add(satelliteObservation);
-                    }
+                    allObservations.AddRange(observations);
+                    
                 }
                 //按时间排序
-                allObservations.Sort((a, b) => a.VisibilityPeriod.Start.CompareTo(b.VisibilityPeriod.Start));
+                allObservations.Sort((a, b) => a.Start.CompareTo(b.Start));
 
                 //添加到列表中
                 listView_Satellitepass.Items.Clear();
@@ -496,17 +354,134 @@ namespace SDRSharp.SDDE
                 foreach (var observation in allObservations)
                 {
                     ListViewItem listItem = new ListViewItem(observation.Satellite.Name);
-                    listItem.SubItems.Add(observation.SatelliteId.ToString());
+                    listItem.SubItems.Add(observation.Satellite.Tle.NoradNumber.ToString());
 
                     // 初始化倒计时为 00:00:00
                     listItem.SubItems.Add("00:00:00");
-
+                    listItem.SubItems.Add(observation.MaxElevation.Degrees.ToString("F2"));
+                    listItem.SubItems.Add(observation.MaxElevation.Radians.ToString("F2"));
                     listViewItems.Add(listItem);
                     listView_Satellitepass.Items.Add(listItem);
                 }
             }
         }
+        //定时器
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            //保存
+            SettingsManager.SaveSettings(SettingsManager.GlobalSettings);
+            // 更新 Label 的文本为当前时间
+            label_time.Text = DateTime.Now.ToString("HH:mm:ss");
 
+            //计算多普勒
+            var location = new GeodeticCoordinate(Angle.FromDegrees(SettingsManager.GlobalSettings.latitude), Angle.FromDegrees(SettingsManager.GlobalSettings.longitude), 0);
+            // 创建地面站
+            var groundStation = new GroundStation(location);
+            //多普勒
+            if (SelectSatellite != null)
+            {
+                if (double.TryParse(textBoxFreq.Text, out double inputFrequency))
+                {
+                    var topocentricObservation = groundStation.Observe(SelectSatellite, DateTime.UtcNow);
+                    var DopplerShift = topocentricObservation.GetDopplerShift(inputFrequency) + inputFrequency;
+                    long DopplerFrq = (long)(DopplerShift * 1000000);
+                    textBoxDopl.Text = DopplerShift.ToString();
+                    if (DopplerisTracking)
+                    {
+                        _control.SetFrequency(DopplerFrq, true);
+                    }
+                }
+            }
+            UpdateCountdowns();
+        }
+        private void UpdateCountdowns()
+        {
+            // 如果 listViewItems 未初始化，直接返回
+            if (listViewItems == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < listViewItems.Count; i++)
+            {
+                var observation = allObservations[i];
+                var listItem = listViewItems[i];
+
+                // 计算倒计时
+                DateTime start = observation.Start;
+                DateTime end = observation.End;
+                TimeSpan countdown;
+                string formattedCountdown;
+                if (end > DateTime.UtcNow && start > DateTime.UtcNow)
+                {
+                    countdown = start - DateTime.UtcNow;
+                    formattedCountdown = countdown.ToString(@"hh\:mm\:ss");
+                }
+                else if (end < DateTime.UtcNow && start < DateTime.UtcNow)
+                {
+                    continue;
+                }
+                else
+                {
+                    countdown = end - DateTime.UtcNow;
+                    formattedCountdown = "P " + countdown.ToString(@"hh\:mm\:ss");
+                }
+
+                // 更新倒计时
+                listItem.SubItems[2].Text = formattedCountdown;
+            }
+        }
+        private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            button_Satellites.Enabled = true;
+            button_Refresh_Click(sender, e);
+        }
+        private Dictionary<string, Dictionary<int, Tle>> ReadAlltles(string path)
+        {
+            //合并路径
+            string directoryPath = Path.Combine(path, "TLE");
+            Dictionary<string, Dictionary<int, Tle>> alltles = new();
+            //读取全部txt
+            if (Directory.Exists(directoryPath))
+            {
+                string[] txtFiles = Directory.GetFiles(directoryPath, "*.txt");
+                if (txtFiles.Length == 0)
+                {
+                    return null;
+                }
+                foreach (string txtFile in txtFiles)
+                {
+                    //把所有TLE都存到alltles
+                    string filePath = Path.Combine(directoryPath, txtFile);
+                    LocalTleProvider provider = new LocalTleProvider(true, filePath);
+                    Dictionary<int, Tle> tles = provider.GetTles();
+                    alltles.Add(filePath, tles);
+                }
+                return alltles;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        static async Task<int> FetchAndSaveToFile(string url, string path)
+        {
+            HttpClient client = new HttpClient();
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                File.WriteAllText(path, responseBody);
+
+                return 1;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
         private void listView_SatelliteF_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.NewValue == CheckState.Checked)
@@ -525,7 +500,6 @@ namespace SDRSharp.SDDE
                 textBoxFreq.Text = downlinkLow;
             }
         }
-
         private void button_Doppler_Click(object sender, EventArgs e)
         {
             // 切换变量值
@@ -534,7 +508,6 @@ namespace SDRSharp.SDDE
             // 更新按钮文本
             button_Doppler.Text = DopplerisTracking ? "Stop" : "Start";
         }
-
         private void listView_Satellitepass_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.NewValue == CheckState.Checked)
