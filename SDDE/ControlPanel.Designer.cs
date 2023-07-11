@@ -30,6 +30,7 @@ namespace SDRSharp.SDDE
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             textBox_Longitude = new System.Windows.Forms.TextBox();
             textBox_Latitude = new System.Windows.Forms.TextBox();
             label1 = new System.Windows.Forms.Label();
@@ -50,6 +51,7 @@ namespace SDRSharp.SDDE
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
             button_Doppler = new System.Windows.Forms.Button();
+            toolTip1 = new System.Windows.Forms.ToolTip(components);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -101,6 +103,7 @@ namespace SDRSharp.SDDE
             button_TLE.Size = new System.Drawing.Size(57, 23);
             button_TLE.TabIndex = 4;
             button_TLE.Text = "TLE";
+            toolTip1.SetToolTip(button_TLE, "Open TLE files path");
             button_TLE.UseVisualStyleBackColor = true;
             button_TLE.Click += button_TLE_Click;
             // 
@@ -140,6 +143,7 @@ namespace SDRSharp.SDDE
             button_Update.Size = new System.Drawing.Size(62, 23);
             button_Update.TabIndex = 12;
             button_Update.Text = "Update";
+            toolTip1.SetToolTip(button_Update, "Update satellites data from web");
             button_Update.UseVisualStyleBackColor = true;
             button_Update.Click += button_Update_Click;
             // 
@@ -150,6 +154,7 @@ namespace SDRSharp.SDDE
             button_Satellites.Size = new System.Drawing.Size(75, 23);
             button_Satellites.TabIndex = 13;
             button_Satellites.Text = "Satellites";
+            toolTip1.SetToolTip(button_Satellites, "Choose Satellites");
             button_Satellites.UseVisualStyleBackColor = true;
             button_Satellites.Click += button_Satellites_Click;
             // 
@@ -160,6 +165,7 @@ namespace SDRSharp.SDDE
             button_Refresh.Size = new System.Drawing.Size(75, 23);
             button_Refresh.TabIndex = 17;
             button_Refresh.Text = "Refresh";
+            toolTip1.SetToolTip(button_Refresh, "Refresh predictions");
             button_Refresh.UseVisualStyleBackColor = true;
             button_Refresh.Click += button_Refresh_Click;
             // 
@@ -178,7 +184,7 @@ namespace SDRSharp.SDDE
             listView_SatelliteF.Dock = System.Windows.Forms.DockStyle.Fill;
             listView_SatelliteF.Location = new System.Drawing.Point(0, 0);
             listView_SatelliteF.Name = "listView_SatelliteF";
-            listView_SatelliteF.Size = new System.Drawing.Size(463, 289);
+            listView_SatelliteF.Size = new System.Drawing.Size(463, 290);
             listView_SatelliteF.TabIndex = 21;
             listView_SatelliteF.UseCompatibleStateImageBehavior = false;
             listView_SatelliteF.ItemCheck += listView_SatelliteF_ItemCheck;
@@ -198,7 +204,7 @@ namespace SDRSharp.SDDE
             // 
             splitContainer1.Panel2.Controls.Add(listView_SatelliteF);
             splitContainer1.Size = new System.Drawing.Size(463, 537);
-            splitContainer1.SplitterDistance = 244;
+            splitContainer1.SplitterDistance = 243;
             splitContainer1.TabIndex = 26;
             // 
             // listView_Satellitepass
@@ -206,7 +212,7 @@ namespace SDRSharp.SDDE
             listView_Satellitepass.Dock = System.Windows.Forms.DockStyle.Fill;
             listView_Satellitepass.Location = new System.Drawing.Point(0, 0);
             listView_Satellitepass.Name = "listView_Satellitepass";
-            listView_Satellitepass.Size = new System.Drawing.Size(463, 244);
+            listView_Satellitepass.Size = new System.Drawing.Size(463, 243);
             listView_Satellitepass.TabIndex = 10;
             listView_Satellitepass.UseCompatibleStateImageBehavior = false;
             listView_Satellitepass.ItemCheck += listView_Satellitepass_ItemCheck;
@@ -254,6 +260,7 @@ namespace SDRSharp.SDDE
             button_Doppler.Size = new System.Drawing.Size(75, 23);
             button_Doppler.TabIndex = 25;
             button_Doppler.Text = "Start";
+            toolTip1.SetToolTip(button_Doppler, "Start Doppler track");
             button_Doppler.UseVisualStyleBackColor = true;
             button_Doppler.Click += button_Doppler_Click;
             // 
@@ -314,5 +321,6 @@ namespace SDRSharp.SDDE
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button_Doppler;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
