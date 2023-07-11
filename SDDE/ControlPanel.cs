@@ -146,12 +146,6 @@ namespace SDRSharp.SDDE
             public List<string> urls { get; set; }
         }
         public List<SatelliteInformations> SatnogsJson = new();
-        public class SatelliteObservation
-        {
-            public Satellite Satellite { get; set; }
-            public int SatelliteId { get; set; }
-            public SatelliteVisibilityPeriod VisibilityPeriod { get; set; }
-        }
         //追踪开关
         bool DopplerisTracking = false;
         //选取的卫星列表
@@ -190,10 +184,9 @@ namespace SDRSharp.SDDE
             listView_Satellitepass.CheckBoxes = true;
             listView_Satellitepass.View = View.Details;
             listView_Satellitepass.Columns.Add("Satellite Name", listView_Satellitepass.Width * 40 / 100, HorizontalAlignment.Center);
-            listView_Satellitepass.Columns.Add("ID", listView_Satellitepass.Width * 15 / 100, HorizontalAlignment.Center);
-            listView_Satellitepass.Columns.Add("Time", listView_Satellitepass.Width * 15 / 100, HorizontalAlignment.Center);
-            listView_Satellitepass.Columns.Add("Elevation", listView_Satellitepass.Width * 15 / 100, HorizontalAlignment.Center);
-            listView_Satellitepass.Columns.Add("Hight", listView_Satellitepass.Width * 15 / 100, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("ID", listView_Satellitepass.Width * 20 / 100, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("Time", listView_Satellitepass.Width * 20 / 100, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("Elevation", listView_Satellitepass.Width * 20 / 100, HorizontalAlignment.Center);
 
             //初始化卫星频率表
             listView_SatelliteF.CheckBoxes = true;
@@ -359,7 +352,6 @@ namespace SDRSharp.SDDE
                     // 初始化倒计时为 00:00:00
                     listItem.SubItems.Add("00:00:00");
                     listItem.SubItems.Add(observation.MaxElevation.Degrees.ToString("F2"));
-                    listItem.SubItems.Add(observation.MaxElevation.Radians.ToString("F2"));
                     listViewItems.Add(listItem);
                     listView_Satellitepass.Items.Add(listItem);
                 }
