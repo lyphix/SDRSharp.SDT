@@ -548,10 +548,19 @@ namespace SDRSharp.SDDE
 
         public void SetListViewColumnWidths(ListView listView, double[] ratios)
         {
+            // 计算比例的总和
             double totalRatio = ratios.Sum();
+
+            // 垂直滚动条的宽度
+            int scrollBarWidth = SystemInformation.VerticalScrollBarWidth;
+
+            // ListView的实际可用宽度
+            int usableWidth = listView.ClientSize.Width - scrollBarWidth;
+
+            // 根据比例设置每列的宽度
             for (int i = 0; i < listView.Columns.Count; i++)
             {
-                listView.Columns[i].Width = (int)(listView.Width * (ratios[i] / totalRatio));
+                listView.Columns[i].Width = (int)(usableWidth * (ratios[i] / totalRatio));
             }
         }
 
@@ -561,6 +570,7 @@ namespace SDRSharp.SDDE
             SetListViewColumnWidths(listView_SatelliteF, ratios);
             SetListViewColumnWidths(listView_Satellitepass, ratios);
         }
+
     }
 
 
