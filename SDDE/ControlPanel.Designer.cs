@@ -44,12 +44,12 @@ namespace SDRSharp.SDDE
             label_SatelliteName = new System.Windows.Forms.Label();
             listView_SatelliteF = new System.Windows.Forms.ListView();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
+            listView_Satellitepass = new System.Windows.Forms.ListView();
             textBoxDopl = new System.Windows.Forms.TextBox();
             textBoxFreq = new System.Windows.Forms.TextBox();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
             button_Doppler = new System.Windows.Forms.Button();
-            listView_Satellitepass = new System.Windows.Forms.ListView();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -178,7 +178,7 @@ namespace SDRSharp.SDDE
             listView_SatelliteF.Dock = System.Windows.Forms.DockStyle.Fill;
             listView_SatelliteF.Location = new System.Drawing.Point(0, 0);
             listView_SatelliteF.Name = "listView_SatelliteF";
-            listView_SatelliteF.Size = new System.Drawing.Size(457, 288);
+            listView_SatelliteF.Size = new System.Drawing.Size(463, 322);
             listView_SatelliteF.TabIndex = 21;
             listView_SatelliteF.UseCompatibleStateImageBehavior = false;
             listView_SatelliteF.ItemCheck += listView_SatelliteF_ItemCheck;
@@ -186,7 +186,7 @@ namespace SDRSharp.SDDE
             // splitContainer1
             // 
             splitContainer1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            splitContainer1.Location = new System.Drawing.Point(3, 236);
+            splitContainer1.Location = new System.Drawing.Point(0, 239);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -197,9 +197,19 @@ namespace SDRSharp.SDDE
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(listView_SatelliteF);
-            splitContainer1.Size = new System.Drawing.Size(457, 537);
-            splitContainer1.SplitterDistance = 245;
+            splitContainer1.Size = new System.Drawing.Size(463, 598);
+            splitContainer1.SplitterDistance = 272;
             splitContainer1.TabIndex = 26;
+            // 
+            // listView_Satellitepass
+            // 
+            listView_Satellitepass.Dock = System.Windows.Forms.DockStyle.Fill;
+            listView_Satellitepass.Location = new System.Drawing.Point(0, 0);
+            listView_Satellitepass.Name = "listView_Satellitepass";
+            listView_Satellitepass.Size = new System.Drawing.Size(463, 272);
+            listView_Satellitepass.TabIndex = 10;
+            listView_Satellitepass.UseCompatibleStateImageBehavior = false;
+            listView_Satellitepass.ItemCheck += listView_Satellitepass_ItemCheck;
             // 
             // textBoxDopl
             // 
@@ -246,16 +256,6 @@ namespace SDRSharp.SDDE
             button_Doppler.Text = "Start";
             button_Doppler.UseVisualStyleBackColor = true;
             button_Doppler.Click += button_Doppler_Click;
-            // 
-            // listView_Satellitepass
-            // 
-            listView_Satellitepass.Dock = System.Windows.Forms.DockStyle.Fill;
-            listView_Satellitepass.Location = new System.Drawing.Point(0, 0);
-            listView_Satellitepass.Name = "listView_Satellitepass";
-            listView_Satellitepass.Size = new System.Drawing.Size(457, 245);
-            listView_Satellitepass.TabIndex = 10;
-            listView_Satellitepass.UseCompatibleStateImageBehavior = false;
-            listView_Satellitepass.ItemCheck += listView_Satellitepass_ItemCheck;
             // 
             // ControlPanel
             // 
