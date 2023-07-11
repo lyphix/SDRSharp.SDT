@@ -284,6 +284,7 @@ namespace SDRSharp.SDDE
             Name = "ControlPanel";
             Size = new System.Drawing.Size(377, 702);
             Load += ControlPanel_Load;
+            Resize += ControlPanel_Resize;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();

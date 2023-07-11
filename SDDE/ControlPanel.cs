@@ -32,7 +32,7 @@ namespace SDRSharp.SDDE
         //插件dll路径
         public string pluginpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private Dictionary<string, Dictionary<int, Tle>> alltles = new();
-        private List<SatelliteVisibilityPeriod> allObservations = new ();
+        private List<SatelliteVisibilityPeriod> allObservations = new();
         public Dictionary<int, Satellite> selected_satellites = new();
         public Satellite SelectSatellite = null;
         //TLE网址
@@ -104,7 +104,7 @@ namespace SDRSharp.SDDE
                 public double latitude { get; set; } = 0;
                 public double longitude { get; set; } = 0;
                 public double degree { get; set; } = 0;
-                public List<int> selected_key { get; set; } = new List<int> {0 };
+                public List<int> selected_key { get; set; } = new List<int> { 0 };
             }
 
             public static Settings GlobalSettings = LoadSettings();
@@ -183,18 +183,26 @@ namespace SDRSharp.SDDE
             //初始化卫星过境表
             listView_Satellitepass.CheckBoxes = true;
             listView_Satellitepass.View = View.Details;
-            listView_Satellitepass.Columns.Add("Satellite Name", listView_Satellitepass.Width * 40 / 100, HorizontalAlignment.Center);
-            listView_Satellitepass.Columns.Add("ID", listView_Satellitepass.Width * 20 / 100, HorizontalAlignment.Center);
-            listView_Satellitepass.Columns.Add("Time", listView_Satellitepass.Width * 20 / 100, HorizontalAlignment.Center);
-            listView_Satellitepass.Columns.Add("Elevation", listView_Satellitepass.Width * 20 / 100, HorizontalAlignment.Center);
+            listView_Satellitepass.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            listView_Satellitepass.Columns.Add("Satellite Name", -2, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("ID", -2, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("Time", -2, HorizontalAlignment.Center);
+            listView_Satellitepass.Columns.Add("Elevation", -2, HorizontalAlignment.Center);
+
+            double[] ratios = { 4, 2, 2, 2 };
+            SetListViewColumnWidths(listView_Satellitepass, ratios);
 
             //初始化卫星频率表
             listView_SatelliteF.CheckBoxes = true;
             listView_SatelliteF.View = View.Details;
-            listView_SatelliteF.Columns.Add("Description", listView_SatelliteF.Width * 40 / 100, HorizontalAlignment.Center);
-            listView_SatelliteF.Columns.Add("Uplink", listView_SatelliteF.Width * 20 / 100, HorizontalAlignment.Center);
-            listView_SatelliteF.Columns.Add("Mode", listView_SatelliteF.Width * 20 / 100, HorizontalAlignment.Center);
-            listView_SatelliteF.Columns.Add("Downlink", listView_SatelliteF.Width * 20 / 100, HorizontalAlignment.Center);
+            listView_SatelliteF.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            listView_SatelliteF.Columns.Add("Description", -2, HorizontalAlignment.Center);
+            listView_SatelliteF.Columns.Add("Uplink", -2, HorizontalAlignment.Center);
+            listView_SatelliteF.Columns.Add("Mode", -2, HorizontalAlignment.Center);
+            listView_SatelliteF.Columns.Add("Downlink", -2, HorizontalAlignment.Center);
+            SetListViewColumnWidths(listView_SatelliteF, ratios);
+
+
 
             button_Refresh_Click(sender, e);
         }
@@ -336,7 +344,7 @@ namespace SDRSharp.SDDE
 
                     //保存观测结果
                     allObservations.AddRange(observations);
-                    
+
                 }
                 //按时间排序
                 allObservations.Sort((a, b) => a.Start.CompareTo(b.Start));
@@ -536,6 +544,22 @@ namespace SDRSharp.SDDE
                     listView_SatelliteF.Items.Add(listItem);
                 }
             }
+        }
+
+        public void SetListViewColumnWidths(ListView listView, double[] ratios)
+        {
+            double totalRatio = ratios.Sum();
+            for (int i = 0; i < listView.Columns.Count; i++)
+            {
+                listView.Columns[i].Width = (int)(listView.Width * (ratios[i] / totalRatio));
+            }
+        }
+
+        private void ControlPanel_Resize(object sender, EventArgs e)
+        {
+            double[] ratios = { 4, 2, 2, 2 };
+            SetListViewColumnWidths(listView_SatelliteF, ratios);
+            SetListViewColumnWidths(listView_Satellitepass, ratios);
         }
     }
 
