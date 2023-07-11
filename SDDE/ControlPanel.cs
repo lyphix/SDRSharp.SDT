@@ -152,7 +152,7 @@ namespace SDRSharp.SDDE
         }
 
         public List<SatelliteInformations> SatnogsJson = new();
-        
+
         public class SatelliteObservation
         {
             public Satellite Satellite { get; set; }

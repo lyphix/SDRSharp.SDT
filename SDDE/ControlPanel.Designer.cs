@@ -137,7 +137,7 @@ namespace SDRSharp.SDDE
             // 
             button_Update.Location = new System.Drawing.Point(295, 93);
             button_Update.Name = "button_Update";
-            button_Update.Size = new System.Drawing.Size(63, 23);
+            button_Update.Size = new System.Drawing.Size(62, 23);
             button_Update.TabIndex = 12;
             button_Update.Text = "Update";
             button_Update.UseVisualStyleBackColor = true;
