@@ -51,13 +51,4 @@ namespace SDRSharp.SDDE
 
         
     }
-    public static class SatKey
-    {
-        public static List<int> CheckedTlesKey { get; set; }
-
-        static SatKey()
-        {
-            CheckedTlesKey = new List<int>();
-        }
-    }
 }

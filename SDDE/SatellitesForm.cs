@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Telerik.WinControls.VirtualKeyboard;
+using static SDRSharp.SDDE.ControlPanel;
 
 namespace SDRSharp.SDDE
 {
@@ -58,7 +59,7 @@ namespace SDRSharp.SDDE
             {
                 string[] item = checkedListBox_Satellites.Items[i].ToString().Split(',');
                 int key = int.Parse(item[1]);
-                foreach (int satkey in SatKey.CheckedTlesKey)
+                foreach (int satkey in SettingsManager.GlobalSettings.selected_key)
                 {
                     if (satkey == key)
                     {
@@ -78,7 +79,10 @@ namespace SDRSharp.SDDE
                 string fileName = Path.GetFileNameWithoutExtension(filePath);
                 comboBox_SatellitesType.Items.Add(fileName);
             }
-            comboBox_SatellitesType.SelectedIndex = 0;
+            if (comboBox_SatellitesType.Items.Count > 0)
+            {
+                comboBox_SatellitesType.SelectedIndex = 0;
+            }
         }
 
         private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -92,16 +96,14 @@ namespace SDRSharp.SDDE
             int key = int.Parse(parts[1]);
             if (e.NewValue == CheckState.Checked)
             {
-                List<int> temp = SatKey.CheckedTlesKey;
-                if (!temp.Contains(key))
+                if (!SettingsManager.GlobalSettings.selected_key.Contains(key))
                 {
-                    temp.Add(key);
+                    SettingsManager.GlobalSettings.selected_key.Add(key);
                 }
             }
             else if (e.NewValue == CheckState.Unchecked)
             {
-                List<int> temp = SatKey.CheckedTlesKey;
-                temp.RemoveAll(x => x == key);
+                SettingsManager.GlobalSettings.selected_key.RemoveAll(x => x == key);
             }
 
 

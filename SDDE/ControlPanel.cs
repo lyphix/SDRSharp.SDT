@@ -101,19 +101,15 @@ namespace SDRSharp.SDDE
 
             public class Settings
             {
-                public double latitude { get; set; }
-                public double longitude { get; set; }
-                public double degree { get; set; }
-                public List<int> selected_key { get; set; }
+                public double latitude { get; set; } = 0;
+                public double longitude { get; set; } = 0;
+                public double degree { get; set; } = 0;
+                public List<int> selected_key { get; set; } = new List<int> {0 };
             }
+
+            public static Settings GlobalSettings = LoadSettings();
+
         }
-        SettingsManager.Settings settings = new SettingsManager.Settings
-        {
-            latitude = 0.0,
-            longitude = 0.0,
-            degree = 0.0,
-            selected_key = new()
-        };
 
         //卫星Json文件格式
         public class SatelliteInformations
@@ -182,11 +178,10 @@ namespace SDRSharp.SDDE
             timer.Start();
 
             //读取设置 经纬度 角度 key
-            settings = SettingsManager.LoadSettings();
-            textBox_Latitude.Text = settings.latitude.ToString();
-            textBox_Longitude.Text = settings.longitude.ToString();
-            textBox_Degree.Text = settings.degree.ToString();
-            SatKey.CheckedTlesKey = settings.selected_key;
+            textBox_Latitude.Text = SettingsManager.GlobalSettings.latitude.ToString();
+            textBox_Longitude.Text = SettingsManager.GlobalSettings.longitude.ToString();
+            textBox_Degree.Text = SettingsManager.GlobalSettings.degree.ToString();
+
             //读取卫星TLE
             alltles = ReadAlltles(pluginpath);
 
@@ -225,7 +220,7 @@ namespace SDRSharp.SDDE
                 longitude = 0;
                 MessageBox.Show("Wrong Longitude, Range:(-180,180)");
             }
-            settings.longitude = longitude;
+            SettingsManager.GlobalSettings.longitude = longitude;
             button_Refresh_Click(sender, e);
         }
 
@@ -237,7 +232,7 @@ namespace SDRSharp.SDDE
                 latitude = 0;
                 MessageBox.Show("Wrong Latitude, Range:(-90,90)");
             }
-            settings.latitude = latitude;
+            SettingsManager.GlobalSettings.latitude = latitude;
             button_Refresh_Click(sender, e);
         }
 
@@ -249,7 +244,7 @@ namespace SDRSharp.SDDE
                 degree = 0;
                 MessageBox.Show("Wrong Degree, Range:(0,90)");
             }
-            settings.degree = degree;
+            SettingsManager.GlobalSettings.degree = degree;
             button_Refresh_Click(sender, e);
         }
 
@@ -264,12 +259,12 @@ namespace SDRSharp.SDDE
         private void Timer_Tick(object sender, EventArgs e)
         {
             //保存
-            SettingsManager.SaveSettings(settings);
+            SettingsManager.SaveSettings(SettingsManager.GlobalSettings);
             // 更新 Label 的文本为当前时间
             label_time.Text = DateTime.Now.ToString("HH:mm:ss");
 
             //计算多普勒
-            var location = new GeodeticCoordinate(Angle.FromDegrees(settings.latitude), Angle.FromDegrees(settings.longitude), 0);
+            var location = new GeodeticCoordinate(Angle.FromDegrees(SettingsManager.GlobalSettings.latitude), Angle.FromDegrees(SettingsManager.GlobalSettings.longitude), 0);
             // 创建地面站
             var groundStation = new GroundStation(location);
             //多普勒
@@ -434,11 +429,11 @@ namespace SDRSharp.SDDE
         private void button_Refresh_Click(object sender, EventArgs e)
         {
             alltles = ReadAlltles(pluginpath);
-            if (settings.selected_key != null && alltles != null)
+            if (SettingsManager.GlobalSettings.selected_key != null && alltles != null)
             {
                 // 保存选择的卫星到selected_satellites
                 selected_satellites.Clear();
-                foreach (int key in settings.selected_key)
+                foreach (int key in SettingsManager.GlobalSettings.selected_key)
                 {
                     foreach (Dictionary<int, Tle> tles in alltles.Values)
                     {
@@ -459,7 +454,7 @@ namespace SDRSharp.SDDE
                 allObservations.Clear();
 
                 // 设置地面位置
-                var location = new GeodeticCoordinate(Angle.FromDegrees(settings.latitude), Angle.FromDegrees(settings.longitude), 0);
+                var location = new GeodeticCoordinate(Angle.FromDegrees(SettingsManager.GlobalSettings.latitude), Angle.FromDegrees(SettingsManager.GlobalSettings.longitude), 0);
                 // 创建地面站
                 var groundStation = new GroundStation(location);
                 // 最小角度
@@ -469,7 +464,6 @@ namespace SDRSharp.SDDE
                 {
                     int satelliteId = entry.Key;
                     Satellite sat = entry.Value;
-
                     //预测卫星过境 从当前时间-10分钟到未来24小时
                     var observations = groundStation.Observe(
                         sat,
