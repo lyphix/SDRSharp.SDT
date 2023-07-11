@@ -356,7 +356,6 @@ namespace SDRSharp.SDDE
                 {
                     ListViewItem listItem = new ListViewItem(observation.Satellite.Name);
                     listItem.SubItems.Add(observation.Satellite.Tle.NoradNumber.ToString());
-
                     // 初始化倒计时为 00:00:00
                     listItem.SubItems.Add("00:00:00");
                     listItem.SubItems.Add(observation.MaxElevation.Degrees.ToString("F2"));
@@ -412,19 +411,23 @@ namespace SDRSharp.SDDE
                 DateTime end = observation.End;
                 TimeSpan countdown;
                 string formattedCountdown;
+                //还没过境
                 if (end > DateTime.UtcNow && start > DateTime.UtcNow)
                 {
                     countdown = start - DateTime.UtcNow;
                     formattedCountdown = countdown.ToString(@"hh\:mm\:ss");
                 }
+                //已过境
                 else if (end < DateTime.UtcNow && start < DateTime.UtcNow)
                 {
-                    continue;
+
+                    formattedCountdown = "Passed";
                 }
+                //正在过境
                 else
                 {
                     countdown = end - DateTime.UtcNow;
-                    formattedCountdown = "P " + countdown.ToString(@"hh\:mm\:ss");
+                    formattedCountdown = "* " + countdown.ToString(@"hh\:mm\:ss");
                 }
 
                 // 更新倒计时
