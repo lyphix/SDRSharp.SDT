@@ -28,10 +28,11 @@ namespace SDRSharp.SDDE
 
     public partial class ControlPanel : UserControl
     {
-
-        private List<SatelliteObservation> allObservations = new List<SatelliteObservation>();
         private ISharpControl _control;
+        //插件dll路径
+        public string pluginpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private Dictionary<string, Dictionary<int, Tle>> alltles = new();
+        private List<SatelliteObservation> allObservations = new List<SatelliteObservation>();
         public Dictionary<int, Satellite> selected_satellites = new();
         public Satellite SelectSatellite = null;
         //TLE网址
@@ -68,9 +69,53 @@ namespace SDRSharp.SDDE
         //卫星信息文件名 网址
         public static string Satnogs = "satnogs.json";
         public static string SatnogsURL = "https://db.satnogs.org/api/transmitters/?format=json";
-        //插件dll路径
-        public string pluginpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        //Json文件格式
+        //settings
+        public static class SettingsManager
+        {
+            public static string SettingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Settings.json");
+
+            public static Settings LoadSettings()
+            {
+                Settings settings = new Settings();
+                if (File.Exists(SettingsPath))
+                {
+                    try
+                    {
+                        string json = File.ReadAllText(SettingsPath);
+                        settings = JsonSerializer.Deserialize<Settings>(json);
+                    }
+                    catch
+                    {
+                        // 文件可能无法读取或解析，这时我们会忽略错误并返回新的设置对象。
+                        settings = new Settings();
+                    }
+                }
+                return settings;
+            }
+
+            public static void SaveSettings(Settings settings)
+            {
+                string json = JsonSerializer.Serialize(settings);
+                File.WriteAllText(SettingsPath, json);
+            }
+
+            public class Settings
+            {
+                public double latitude { get; set; }
+                public double longitude { get; set; }
+                public double degree { get; set; }
+                public List<int> selected_key { get; set; }
+            }
+        }
+        SettingsManager.Settings settings = new SettingsManager.Settings
+        {
+            latitude = 0.0,
+            longitude = 0.0,
+            degree = 0.0,
+            selected_key = new()
+        };
+
+        //卫星Json文件格式
         public class SatelliteInformations
         {
             public string uuid { get; set; }
@@ -107,13 +152,7 @@ namespace SDRSharp.SDDE
         }
 
         public List<SatelliteInformations> SatnogsJson = new();
-        public ControlPanel(ISharpControl control)
-        {
-            _control = control;
-            InitializeComponent();
-            typeof(ListView).InvokeMember("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty, null, listView_Satellitepass, new object[] { true });
-        }
-
+        
         public class SatelliteObservation
         {
             public Satellite Satellite { get; set; }
@@ -121,10 +160,6 @@ namespace SDRSharp.SDDE
             public SatelliteVisibilityPeriod VisibilityPeriod { get; set; }
         }
 
-        // 经纬度 角度
-        public double latitude;
-        public double longitude;
-        public double degree;
 
         //追踪开关
         bool DopplerisTracking = false;
@@ -132,6 +167,12 @@ namespace SDRSharp.SDDE
         //选取的卫星列表
         private List<ListViewItem> listViewItems;
 
+        public ControlPanel(ISharpControl control)
+        {
+            _control = control;
+            InitializeComponent();
+            typeof(ListView).InvokeMember("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty, null, listView_Satellitepass, new object[] { true });
+        }
         private void ControlPanel_Load(object sender, EventArgs e)
         {
             //定时器
@@ -141,10 +182,13 @@ namespace SDRSharp.SDDE
             timer.Start();
 
             //读取设置 经纬度 角度 key
-            LoadSettings();
-
+            settings = SettingsManager.LoadSettings();
+            textBox_Latitude.Text = settings.latitude.ToString();
+            textBox_Longitude.Text = settings.longitude.ToString();
+            textBox_Degree.Text = settings.degree.ToString();
+            SatKey.CheckedTlesKey = settings.selected_key;
             //读取卫星TLE
-            alltles = ReadAlltles();
+            alltles = ReadAlltles(pluginpath);
 
             //读取卫星信息
             string pathsatnogs = Path.Combine(pluginpath, $"{Satnogs}");
@@ -169,37 +213,44 @@ namespace SDRSharp.SDDE
             listView_SatelliteF.Columns.Add("Mode", listView_SatelliteF.Width * 20 / 100, HorizontalAlignment.Center);
             listView_SatelliteF.Columns.Add("Downlink", listView_SatelliteF.Width * 20 / 100, HorizontalAlignment.Center);
 
+            button_Refresh_Click(sender, e);
         }
 
         //经纬度 角度 输入
         private void textBox_Longitude_Leave(object sender, System.EventArgs e)
         {
-            if (!double.TryParse(textBox_Longitude.Text, out longitude) || longitude < -180 || longitude > 180)
+            if (!double.TryParse(textBox_Longitude.Text, out double longitude) || longitude < -180 || longitude > 180)
             {
                 textBox_Longitude.Text = "0";
+                longitude = 0;
                 MessageBox.Show("Wrong Longitude, Range:(-180,180)");
             }
-            longitude = double.Parse(textBox_Longitude.Text);
+            settings.longitude = longitude;
+            button_Refresh_Click(sender, e);
         }
 
         private void textBox_Latitude_Leave(object sender, System.EventArgs e)
         {
-            if (!double.TryParse(textBox_Latitude.Text, out latitude) || latitude < -90 || latitude > 90)
+            if (!double.TryParse(textBox_Latitude.Text, out double latitude) || latitude < -90 || latitude > 90)
             {
                 textBox_Latitude.Text = "0";
+                latitude = 0;
                 MessageBox.Show("Wrong Latitude, Range:(-90,90)");
             }
-            latitude = double.Parse(textBox_Latitude.Text);
+            settings.latitude = latitude;
+            button_Refresh_Click(sender, e);
         }
 
         private void textBox_Degree_Leave(object sender, EventArgs e)
         {
-            if (!double.TryParse(textBox_Degree.Text, out degree) || degree < 0 || degree > 90)
+            if (!double.TryParse(textBox_Degree.Text, out double degree) || degree < 0 || degree > 90)
             {
-                textBox_Degree.Text = "10";
+                textBox_Degree.Text = "0";
+                degree = 0;
                 MessageBox.Show("Wrong Degree, Range:(0,90)");
             }
-            latitude = double.Parse(textBox_Degree.Text);
+            settings.degree = degree;
+            button_Refresh_Click(sender, e);
         }
 
         //打开TLE目录
@@ -212,13 +263,13 @@ namespace SDRSharp.SDDE
         //定时器
         private void Timer_Tick(object sender, EventArgs e)
         {
-
+            //保存
+            SettingsManager.SaveSettings(settings);
             // 更新 Label 的文本为当前时间
             label_time.Text = DateTime.Now.ToString("HH:mm:ss");
-            SaveSettings();
 
             //计算多普勒
-            var location = new GeodeticCoordinate(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
+            var location = new GeodeticCoordinate(Angle.FromDegrees(settings.latitude), Angle.FromDegrees(settings.longitude), 0);
             // 创建地面站
             var groundStation = new GroundStation(location);
             //多普勒
@@ -277,44 +328,6 @@ namespace SDRSharp.SDDE
             }
         }
 
-        private void SaveSettings()
-        {
-
-
-            // 保存 Satellites 的选择
-
-
-            // 保存经度和纬度的值
-            if (!string.IsNullOrEmpty(textBox_Longitude.Text))
-            {
-                Properties.Settings.Default.Longitude = textBox_Longitude.Text;
-            }
-
-            if (!string.IsNullOrEmpty(textBox_Latitude.Text))
-            {
-                Properties.Settings.Default.Latitude = textBox_Latitude.Text;
-            }
-
-            // 保存设置
-            Properties.Settings.Default.Save();
-        }
-
-        private void LoadSettings()
-        {
-
-            // 恢复 SelectedSatellites 的选择
-
-            // 恢复经度和纬度的值
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.Longitude))
-            {
-                textBox_Longitude.Text = Properties.Settings.Default.Longitude;
-            }
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.Latitude))
-            {
-                textBox_Latitude.Text = Properties.Settings.Default.Latitude;
-            }
-        }
-
         private void button_Update_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Update TLE & Satellites data from Web?", "Update", MessageBoxButtons.YesNo);
@@ -350,7 +363,7 @@ namespace SDRSharp.SDDE
 
         private void button_Satellites_Click(object sender, EventArgs e)
         {
-            alltles = ReadAlltles();
+            alltles = ReadAlltles(pluginpath);
             if (alltles != null)
             {
                 SatellitesForm satellitesForm = new SatellitesForm(alltles);
@@ -368,13 +381,14 @@ namespace SDRSharp.SDDE
         private void SatellitesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             button_Satellites.Enabled = true;
+            button_Refresh_Click(sender, e);
         }
-        private Dictionary<string, Dictionary<int, Tle>> ReadAlltles()
+        private Dictionary<string, Dictionary<int, Tle>> ReadAlltles(string path)
         {
             //合并路径
-            string directoryPath = Path.Combine(pluginpath, "TLE");
+            string directoryPath = Path.Combine(path, "TLE");
             Dictionary<string, Dictionary<int, Tle>> alltles = new();
-            //读取TLE
+            //读取全部txt
             if (Directory.Exists(directoryPath))
             {
                 string[] txtFiles = Directory.GetFiles(directoryPath, "*.txt");
@@ -419,14 +433,12 @@ namespace SDRSharp.SDDE
 
         private void button_Refresh_Click(object sender, EventArgs e)
         {
-            alltles = ReadAlltles();
-
-            List<int> keys = SatKey.CheckedTlesKey;
-            if (keys != null && alltles != null)
+            alltles = ReadAlltles(pluginpath);
+            if (settings.selected_key != null && alltles != null)
             {
                 // 保存选择的卫星到selected_satellites
                 selected_satellites.Clear();
-                foreach (int key in keys)
+                foreach (int key in settings.selected_key)
                 {
                     foreach (Dictionary<int, Tle> tles in alltles.Values)
                     {
@@ -447,7 +459,7 @@ namespace SDRSharp.SDDE
                 allObservations.Clear();
 
                 // 设置地面位置
-                var location = new GeodeticCoordinate(Angle.FromDegrees(latitude), Angle.FromDegrees(longitude), 0);
+                var location = new GeodeticCoordinate(Angle.FromDegrees(settings.latitude), Angle.FromDegrees(settings.longitude), 0);
                 // 创建地面站
                 var groundStation = new GroundStation(location);
                 // 最小角度
@@ -457,7 +469,6 @@ namespace SDRSharp.SDDE
                 {
                     int satelliteId = entry.Key;
                     Satellite sat = entry.Value;
-
 
                     //预测卫星过境 从当前时间-10分钟到未来24小时
                     var observations = groundStation.Observe(
