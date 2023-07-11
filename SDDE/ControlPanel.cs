@@ -385,7 +385,7 @@ namespace SDRSharp.SDDE
                     var topocentricObservation = groundStation.Observe(SelectSatellite, DateTime.UtcNow);
                     var DopplerShift = topocentricObservation.GetDopplerShift(inputFrequency) + inputFrequency;
                     long DopplerFrq = (long)(DopplerShift * 1000000);
-                    textBoxDopl.Text = DopplerShift.ToString();
+                    textBoxDopl.Text = DopplerShift.ToString("F6");
                     if (DopplerisTracking)
                     {
                         _control.SetFrequency(DopplerFrq, true);
