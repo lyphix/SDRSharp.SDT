@@ -5,6 +5,7 @@
 SDT（Satellite Doppler Tracker / 人造卫星多普勒追踪器）是一个SDRSharp插件，这款插件使用了[SGP.NET](https://github.com/parzivail/SGP.NET)包进行多普勒效应计算，并能预测卫星过境，获取卫星的频率信息，自动计算多普勒位移，并控制SDRSharp的频率。
 
 SDT (Satellite Doppler Tracker) is an SDRSharp plugin that utilizes the [SGP.NET](https://github.com/parzivail/SGP.NET) package to calculate the Doppler effect. It can predict satellite transits, obtain satellite frequency information, automatically calculate Doppler shifts, and control the frequency of SDRSharp.
+![SDT](sdt.png)
 
 ## 特性 / Features
 
