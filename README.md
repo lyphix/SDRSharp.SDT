@@ -1,4 +1,4 @@
-# SDRSharp.SDT: Satellite Doppler Tracker Plugin / SDRSharp人造卫星多普勒追踪插件
+# SDRSharp.SDT: Satellite Doppler Tracker Plugin / SDRSharp卫星多普勒追踪插件
 
 ## 介绍 / Introduction
 
