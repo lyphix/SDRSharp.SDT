@@ -4,7 +4,7 @@
 
 ### 中文
 
-SDT（人造卫星多普勒追踪器）是一个SDRSharp插件，这款插件使用了[SGP.NET](https://github.com/parzivail/SGP.NET)包进行多普勒效应计算，并能预测卫星过境，获取卫星的频率信息，自动计算多普勒位移，并控制SDRSharp的频率。
+SDT（卫星多普勒追踪器）是一个SDRSharp插件，这款插件使用了[SGP.NET](https://github.com/parzivail/SGP.NET)包进行多普勒效应计算，并能预测卫星过境，获取卫星的频率信息，自动计算多普勒位移，并控制SDRSharp的频率。
 
 ### English
 
