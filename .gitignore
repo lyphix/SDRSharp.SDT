@@ -20,8 +20,6 @@ mono_crash.*
 [Dd]ebug/*
 ![Dd]ebug/net7.0-windows/
 [Dd]ebug/net7.0-windows/*
-![Dd]ebug/net7.0-windows/SDRSharp.config
-![Dd]ebug/net7.0-windows/SDRSharp.Layout.xml
 ![Dd]ebug/net7.0-windows/SGP.NET.dll
 [Dd]ebugPublic/
 [Rr]elease/
