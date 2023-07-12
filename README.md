@@ -71,3 +71,10 @@ SDT (Satellite Doppler Tracker) is an SDR# plugin that can update satellites' TL
 ### English
 
 This project is licensed under the MIT License. For more details, please check the [LICENSE](LICENSE.txt) file.
+
+## Thanks
+[SGP.NET](https://github.com/parzivail/SGP.NET)
+
+[CelesTrak](https://celestrak.org/)
+
+[SatNOGS](https://satnogs.org/)
