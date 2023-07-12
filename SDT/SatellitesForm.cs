@@ -11,9 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Telerik.WinControls.VirtualKeyboard;
-using static SDRSharp.SDDE.ControlPanel;
+using static SDRSharp.SDT.ControlPanel;
 
-namespace SDRSharp.SDDE
+namespace SDRSharp.SDT
 {
     public partial class SatellitesForm : Form
     {

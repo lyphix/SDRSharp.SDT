@@ -6,16 +6,16 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace SDRSharp.SDDE
+namespace SDRSharp.SDT
 {
-    public class SatelliteDDE : ISharpPlugin, ICanLazyLoadGui, ISupportStatus, IExtendedNameProvider
+    public class SatelliteDopplerTracker : ISharpPlugin, ICanLazyLoadGui, ISupportStatus, IExtendedNameProvider
     {
         private ControlPanel _gui;
         private ISharpControl _control;
 
-        public string DisplayName => "SDDE";
+        public string DisplayName => "SDT";
 
-        public string Category => "DDE";
+        public string Category => "Satellite";
 
         public string MenuItemName => DisplayName;
 

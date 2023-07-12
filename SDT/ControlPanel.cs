@@ -23,7 +23,7 @@ using System.Text.Json;
 using Telerik.WinControls.Drawing;
 using Path = System.IO.Path;
 
-namespace SDRSharp.SDDE
+namespace SDRSharp.SDT
 {
 
     public partial class ControlPanel : UserControl

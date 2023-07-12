@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SDRSharp.SDDE
+namespace SDRSharp.SDT
 {
     partial class ControlPanel
     {

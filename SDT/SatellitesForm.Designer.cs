@@ -1,4 +1,4 @@
-﻿namespace SDRSharp.SDDE
+﻿namespace SDRSharp.SDT
 {
     partial class SatellitesForm
     {
